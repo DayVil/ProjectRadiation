@@ -45,5 +45,5 @@ output.json
 obj/
 
 #apis
-./apikey.properties
-./src/main/res/values/secrets.xml
+apikey.properties
+app/src/main/res/values/secrets.xml
