@@ -1,8 +1,7 @@
 package eu.chi.luh.projectradiation
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -41,8 +40,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
 
         // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
+        val sydney = LatLng(52.512454, 13.416506)
+        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Berlin"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
 }
