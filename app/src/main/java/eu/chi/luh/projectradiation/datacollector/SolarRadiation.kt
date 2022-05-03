@@ -1,24 +1,22 @@
-package eu.chi.luh.projectradiation
+package eu.chi.luh.projectradiation.datacollector
 
 import android.util.Log
+import eu.chi.luh.projectradiation.database.Uvi
 import okhttp3.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
+import java.util.concurrent.CountDownLatch
 
-class SolarRadiation(solarApiKey: String) {
+class SolarRadiation(solarApiKey: String, lat: Double, lon: Double) {
 
-    private val rUrl: String
     private val client: OkHttpClient
     private val request: Request
-    private lateinit var jsonResponse: JSONObject
 
-    private val lat = 52.512454
-    private val lon = 13.416506
     private val exclude = "daily,minutely"
 
     init {
-        rUrl = "https://api.openweathermap.org/data/2.5/onecall?" +
+        val rUrl = "https://api.openweathermap.org/data/2.5/onecall?" +
                 "lat=$lat&lon=$lon&exclude=$exclude&appid=$solarApiKey"
         client = OkHttpClient()
         request = Request.Builder().url(rUrl).build()
@@ -59,7 +57,7 @@ class SolarRadiation(solarApiKey: String) {
      * @param rawData The raw data where then information will be extracted from
      * @return Returns [current, minimum, maximum, average] uvi values
      */
-    private fun getUviData(rawData: JSONObject): DoubleArray {
+    private fun getUviData(rawData: JSONObject): Uvi {
         val hourlySet: JSONArray = rawData.getJSONArray("hourly")
 
         val current: Double = rawData.getJSONObject("current").getDouble("uvi")
@@ -74,37 +72,48 @@ class SolarRadiation(solarApiKey: String) {
         }
         val average: Double = sum / hourlySet.length()
 
-        return doubleArrayOf(current, minVal, maxVal, average)
+        return Uvi(current, average, minVal, maxVal)
     }
 
-    private fun requestDataManipulation(rawStringJson: String?) {
-        if (rawStringJson == null) throw NullPointerException("The rBody is null!")
 
-        jsonResponse = JSONObject(rawStringJson)
-        val uviData = getUviData(jsonResponse)
-        Log.d(
-            "OPEN WEATHER",
-            "uvi measures: minimum=${uviData[1]}\tmaximum=${uviData[2]}" +
-                    "\taverage=${uviData[3]}\tcurrent=${uviData[0]}"
-        )
-
+    /**
+     * Parses and calculates the necessary data and returns it as a Uvi
+     * @param rawStringJson The raw string of the responded request
+     * @return returns uvi data as Uvi
+     */
+    private fun requestDataManipulation(rawStringJson: String?): Uvi {
+        if (rawStringJson == null) throw NullPointerException("The request body is null!")
+        val jsonResponse = JSONObject(rawStringJson)
+        return getUviData(jsonResponse)
     }
 
     /**
      * Runs the process of fetching uvi data of a day and processing it.
      */
-    fun run() {
+    fun run(): Uvi? {
+        val countDownLatch = CountDownLatch(1)
+        var uviData: Uvi? = null
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                Log.d("OPEN WEATHER", "Error on response: $e")
+                countDownLatch.countDown()
+                Log.d("OPEN WEATHER", "Error on response.")
+                throw IOException(e)
             }
 
             override fun onResponse(call: Call, response: Response) {
+                Log.d("OPEN WEATHER", "Successfull connection")
                 val rBody = response.body?.string()
-                Log.d("OPEN WEATHER", "Successfull response with:\n${rBody}")
+                uviData = requestDataManipulation(rBody)
 
-                requestDataManipulation(rBody)
+                Log.d(
+                    "OPEN WEATHER",
+                    "uvi measures: minimum=${uviData?.minimum}\tmaximum=${uviData?.maximum}" +
+                            "\taverage=${uviData?.average}\tcurrent=${uviData?.current}"
+                )
+                countDownLatch.countDown()
             }
         })
+        countDownLatch.await()
+        return uviData
     }
 }
