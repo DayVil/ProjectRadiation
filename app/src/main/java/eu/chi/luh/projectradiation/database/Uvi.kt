@@ -1,12 +1,15 @@
 package eu.chi.luh.projectradiation.database
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-/**
- * TODO: MAKE THIS AN ENTITY
- */
+
+@Entity
 data class Uvi(
-    val current: Double,
-    val average: Double,
-    val minimum: Double,
-    val maximum: Double
+    @PrimaryKey(autoGenerate = true) val uviId: Int? = null,
+    @ColumnInfo val uviCurrent: Double,
+    @ColumnInfo val uviAverage: Double,
+    @ColumnInfo val uviMinimum: Double,
+    @ColumnInfo val uviMaximum: Double
     )

@@ -8,11 +8,10 @@ import org.json.JSONObject
 import java.io.IOException
 import java.util.concurrent.CountDownLatch
 
-class SolarRadiation(solarApiKey: String, lat: Double, lon: Double) {
+class UviCollector(solarApiKey: String, lat: Double, lon: Double) {
 
     private val client: OkHttpClient
     private val request: Request
-
     private val exclude = "daily,minutely"
 
     init {
@@ -72,7 +71,7 @@ class SolarRadiation(solarApiKey: String, lat: Double, lon: Double) {
         }
         val average: Double = sum / hourlySet.length()
 
-        return Uvi(current, average, minVal, maxVal)
+        return Uvi(uviCurrent = current, uviAverage = average, uviMinimum = minVal, uviMaximum = maxVal)
     }
 
 
@@ -90,10 +89,12 @@ class SolarRadiation(solarApiKey: String, lat: Double, lon: Double) {
     /**
      * Runs the process of fetching uvi data of a day and processing it.
      */
-    fun run(): Uvi? {
+    fun collect(): Uvi? {
         val countDownLatch = CountDownLatch(1)
         var uviData: Uvi? = null
+
         client.newCall(request).enqueue(object : Callback {
+            // TODO This should not be an exception
             override fun onFailure(call: Call, e: IOException) {
                 countDownLatch.countDown()
                 Log.d("OPEN WEATHER", "Error on response.")
@@ -107,8 +108,8 @@ class SolarRadiation(solarApiKey: String, lat: Double, lon: Double) {
 
                 Log.d(
                     "OPEN WEATHER",
-                    "uvi measures: minimum=${uviData?.minimum}\tmaximum=${uviData?.maximum}" +
-                            "\taverage=${uviData?.average}\tcurrent=${uviData?.current}"
+                    "uvi measures: minimum=${uviData?.uviMinimum}\tmaximum=${uviData?.uviMaximum}" +
+                            "\taverage=${uviData?.uviAverage}\tcurrent=${uviData?.uviCurrent}"
                 )
                 countDownLatch.countDown()
             }

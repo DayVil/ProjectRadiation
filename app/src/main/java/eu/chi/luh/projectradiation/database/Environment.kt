@@ -6,6 +6,6 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Environment(
-    @PrimaryKey val dt: Long,
+    @PrimaryKey val dt: Long = System.currentTimeMillis(),
     @Embedded val uvi: Uvi
 )
