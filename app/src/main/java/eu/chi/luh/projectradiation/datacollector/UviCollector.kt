@@ -8,17 +8,13 @@ import org.json.JSONObject
 import java.io.IOException
 import java.util.concurrent.CountDownLatch
 
-class UviCollector(solarApiKey: String, lat: Double, lon: Double) {
-
-    private val client: OkHttpClient
-    private val request: Request
-    private val exclude = "daily,minutely"
+class UviCollector(_apiKey: String): EnvironmentCollector<Uvi>(_apiKey) {
+    private val _exclude = "daily,minutely"
 
     init {
         val rUrl = "https://api.openweathermap.org/data/2.5/onecall?" +
-                "lat=$lat&lon=$lon&exclude=$exclude&appid=$solarApiKey"
-        client = OkHttpClient()
-        request = Request.Builder().url(rUrl).build()
+                "lat=${this.lat}&lon=${this.lon}&exclude=${this._exclude}&appid=$_apiKey"
+        this.request = Request.Builder().url(rUrl).build()
     }
 
     /**
@@ -53,13 +49,17 @@ class UviCollector(solarApiKey: String, lat: Double, lon: Double) {
     /**
      * Calculates the [current, minimum, maximum, average] uvi values over a day.
      *
-     * @param rawData The raw data where then information will be extracted from
+     * @param rawStringJson The raw data string where then information will be extracted from
      * @return Returns [current, minimum, maximum, average] uvi values
      */
-    private fun getUviData(rawData: JSONObject): Uvi {
+    private fun getUviData(rawStringJson: String?): Uvi {
+        if (rawStringJson == null) throw NullPointerException("The request body is null!")
+        val rawData = JSONObject(rawStringJson)
+
         val hourlySet: JSONArray = rawData.getJSONArray("hourly")
 
         val current: Double = rawData.getJSONObject("current").getDouble("uvi")
+
         val minVal: Double = getExtreme(hourlySet, "uvi", current, '<')
         val maxVal: Double = getExtreme(hourlySet, "uvi", current, '>')
 
@@ -74,22 +74,10 @@ class UviCollector(solarApiKey: String, lat: Double, lon: Double) {
         return Uvi(uviCurrent = current, uviAverage = average, uviMinimum = minVal, uviMaximum = maxVal)
     }
 
-
-    /**
-     * Parses and calculates the necessary data and returns it as a Uvi
-     * @param rawStringJson The raw string of the responded request
-     * @return returns uvi data as Uvi
-     */
-    private fun requestDataManipulation(rawStringJson: String?): Uvi {
-        if (rawStringJson == null) throw NullPointerException("The request body is null!")
-        val jsonResponse = JSONObject(rawStringJson)
-        return getUviData(jsonResponse)
-    }
-
     /**
      * Runs the process of fetching uvi data of a day and processing it.
      */
-    fun collect(): Uvi? {
+    override fun collect(): Uvi? {
         val countDownLatch = CountDownLatch(1)
         var uviData: Uvi? = null
 
@@ -104,7 +92,7 @@ class UviCollector(solarApiKey: String, lat: Double, lon: Double) {
             override fun onResponse(call: Call, response: Response) {
                 Log.d("OPEN WEATHER", "Successfull connection")
                 val rBody = response.body?.string()
-                uviData = requestDataManipulation(rBody)
+                uviData = getUviData(rBody)
 
                 Log.d(
                     "OPEN WEATHER",

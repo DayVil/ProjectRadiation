@@ -1,13 +1,20 @@
 package eu.chi.luh.projectradiation.datacollector
 
-abstract class EnvironmentCollector(private val _apiKey: String) {
-    private var _lat: Double = 0.0
-    private var _lon: Double = 0.0
+import okhttp3.OkHttpClient
+import okhttp3.Request
+
+abstract class EnvironmentCollector<T>(private val _apiKey: String) {
+    protected val client: OkHttpClient = OkHttpClient()
+
+    protected lateinit var request: Request
+
+    protected var lat: Double = 0.0
+    protected var lon: Double = 0.0
 
     fun setPosition(lat: Double, lon: Double) {
-        this._lat = lat
-        this._lon = lon
+        this.lat = lat
+        this.lon = lon
     }
 
-    abstract fun collect()
+    abstract fun collect(): T?
 }

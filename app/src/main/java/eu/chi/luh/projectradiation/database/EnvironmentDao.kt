@@ -7,15 +7,12 @@ import androidx.room.Query
 
 @Dao
 interface EnvironmentDao {
-    @Query("SELECT * FROM environment")
-    fun getAll(): List<Environment>
+    @Query("SELECT * FROM uvi")
+    fun getAll(): List<Uvi>
 
     @Insert
-    fun insertEnvironment(env: Environment)
+    fun insertAll(vararg uvis: Uvi)
 
     @Delete
-    fun deleteEnvironment(vararg env: Environment)
-
-    @Query("DELETE FROM environment")
-    fun deleteAll()
+    fun delete(uvi: Uvi)
 }

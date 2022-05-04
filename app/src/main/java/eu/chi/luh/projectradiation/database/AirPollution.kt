@@ -4,6 +4,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class Pollen(
-    @PrimaryKey(autoGenerate = true) val pollenId: Int
+data class AirPollution(
+    @PrimaryKey(autoGenerate = true) val apId: Int = 0
 )
