@@ -5,5 +5,5 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Pollen(
-    @PrimaryKey(autoGenerate = true) val pollenId: Int
+    @PrimaryKey(autoGenerate = true) val pollenId: Int = 0
 )
