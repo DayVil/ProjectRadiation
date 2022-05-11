@@ -71,7 +71,7 @@ class UviCollector(_apiKey: String): EnvironmentCollector<Uvi>(_apiKey) {
         }
         val average: Double = sum / hourlySet.length()
 
-        return Uvi(uviCurrent = current, uviAverage = average, uviMinimum = minVal, uviMaximum = maxVal)
+        return Uvi(response = true, uviCurrent = current, uviAverage = average, uviMinimum = minVal, uviMaximum = maxVal)
     }
 
     /**
@@ -82,11 +82,11 @@ class UviCollector(_apiKey: String): EnvironmentCollector<Uvi>(_apiKey) {
         var uviData: Uvi? = null
 
         client.newCall(request).enqueue(object : Callback {
-            // TODO This should not be an exception
             override fun onFailure(call: Call, e: IOException) {
                 countDownLatch.countDown()
                 Log.d("OPEN WEATHER", "Error on response.")
-                throw IOException(e)
+                uviData = Uvi(false)
+                countDownLatch.countDown()
             }
 
             override fun onResponse(call: Call, response: Response) {

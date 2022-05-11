@@ -1,5 +1,6 @@
 package eu.chi.luh.projectradiation.datacollector
 
+import android.util.Log
 import eu.chi.luh.projectradiation.entities.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
