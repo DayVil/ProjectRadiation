@@ -8,6 +8,8 @@ abstract class EnvironmentCollector<T>(private val _apiKey: String) {
 
     protected lateinit var request: Request
 
+    protected var tstamp: Long = 0
+
     protected var lat: Double = 0.0
     protected var lon: Double = 0.0
 
@@ -16,5 +18,5 @@ abstract class EnvironmentCollector<T>(private val _apiKey: String) {
         this.lon = lon
     }
 
-    abstract fun collect(): T?
+    abstract fun collect(): T? //TODO Add time param
 }

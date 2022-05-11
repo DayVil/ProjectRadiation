@@ -1,7 +1,7 @@
 package eu.chi.luh.projectradiation.datacollector
 
 import android.util.Log
-import eu.chi.luh.projectradiation.database.Uvi
+import eu.chi.luh.projectradiation.entities.Uvi
 import okhttp3.*
 import org.json.JSONArray
 import org.json.JSONObject

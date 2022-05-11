@@ -5,11 +5,12 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
 import eu.chi.luh.projectradiation.R
-import eu.chi.luh.projectradiation.database.AppDatabase
+import eu.chi.luh.projectradiation.entities.AppDatabase
 import eu.chi.luh.projectradiation.databinding.ActivityMainBinding
 import eu.chi.luh.projectradiation.datacollector.DataCollector
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.util.concurrent.CountDownLatch
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -19,6 +20,8 @@ class MainActivity : AppCompatActivity() {
 
     private val _lat = 52.512454
     private val _lon = 13.416506
+
+    private var lastButtonReq: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     private fun preRun() {
         db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "environment-data")
             .fallbackToDestructiveMigration().build()
+//        db.environmentDao().deleteAll()
 
         dataCollector = DataCollector(
             db,
@@ -49,11 +53,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.hardcodedLocationButton.setOnClickListener {
-            //
-            GlobalScope.launch {
-                dataCollector.collect()
+            if (System.currentTimeMillis() - lastButtonReq > 10000) {
+                GlobalScope.launch {
+                    dataCollector.collect()
+                }
+                lastButtonReq = System.currentTimeMillis()
             }
-            //
+        }
+
+        binding.delData.setOnClickListener {
+            GlobalScope.launch {
+                db.environmentDao().deleteAll()
+            }
         }
     }
 }
