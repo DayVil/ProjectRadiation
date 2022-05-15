@@ -3,4 +3,14 @@
     <string name="title_activity_maps">MapsActivity</string>
     <string name="oMapsButtonstr">Maps_Button</string>
     <string name="hardcodedLocationButtonstr">Button</string>
+
+    <!-- current menu -->
+    <string name="current_title">Current</string>
+
+    <!-- map menu -->
+    <string name="maps_title">Map</string>
+
+    <!-- settings menu -->
+    <string name="settings_title">Settings</string>
+
 </resources>

@@ -54,6 +54,9 @@ dependencies {
     // okhttp3 for requesting
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
 
+    // Material
+    implementation 'com.google.android.material:material:1.6.0'
+
     // Room for sql management
     def room_version = "2.4.2"
     implementation "androidx.room:room-runtime:$room_version"
