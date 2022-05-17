@@ -13,12 +13,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import eu.chi.luh.projectradiation.R
 import eu.chi.luh.projectradiation.datacollector.DataCollector
 import eu.chi.luh.projectradiation.entities.AppDatabase
+import eu.chi.luh.projectradiation.entities.tmp.TemporaryData.Companion.db
 
 class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
 
     private lateinit var mapIntent: Intent
-    private lateinit var db: AppDatabase
     private lateinit var dataCollector: DataCollector
 
     private val _lat = 52.512454
@@ -33,7 +33,6 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         preRun()
-        uiButtons()
     }
 
     private fun preRun() {
@@ -53,28 +52,6 @@ class MainActivity : AppCompatActivity() {
             getString(R.string.AMBEE_API)
         )
         dataCollector.setPosition(_lat, _lon)
-    }
-
-    private fun uiButtons() {
-//        binding.oMapsButton.setOnClickListener {
-//            mapIntent = Intent(this, MapsActivity::class.java)
-//            startActivity(mapIntent)
-//        }
-//
-//        binding.hardcodedLocationButton.setOnClickListener {
-//            if (System.currentTimeMillis() - lastButtonReq > 10000) {
-//                GlobalScope.launch {
-//                    dataCollector.collect()
-//                }
-//                lastButtonReq = System.currentTimeMillis()
-//            }
-//        }
-//
-//        binding.delData.setOnClickListener {
-//            GlobalScope.launch {
-//                db.environmentDao().deleteAll()
-//            }
-//        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
