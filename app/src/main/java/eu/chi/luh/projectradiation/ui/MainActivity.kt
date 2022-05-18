@@ -1,6 +1,5 @@
 package eu.chi.luh.projectradiation.ui
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -13,18 +12,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import eu.chi.luh.projectradiation.R
 import eu.chi.luh.projectradiation.datacollector.DataCollector
 import eu.chi.luh.projectradiation.entities.AppDatabase
+import eu.chi.luh.projectradiation.entities.tmp.TemporaryData.Companion.currentPos
 import eu.chi.luh.projectradiation.entities.tmp.TemporaryData.Companion.db
 
 class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
-
-    private lateinit var mapIntent: Intent
     private lateinit var dataCollector: DataCollector
-
-    private val _lat = 52.512454
-    private val _lon = 13.416506
-
-    private var lastButtonReq: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +28,9 @@ class MainActivity : AppCompatActivity() {
         preRun()
     }
 
+    /**
+     * Runs the necessary steps before final launch
+     */
     private fun preRun() {
         val navFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
@@ -51,7 +47,7 @@ class MainActivity : AppCompatActivity() {
             getString(R.string.OPEN_WEATHER_API),
             getString(R.string.AMBEE_API)
         )
-        dataCollector.setPosition(_lat, _lon)
+        dataCollector.setPosition(currentPos)
     }
 
     override fun onSupportNavigateUp(): Boolean {

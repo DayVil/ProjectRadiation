@@ -43,11 +43,11 @@ class CurrentRadiationFragment : Fragment() {
 
         val dataCollector =
             DataCollector(db, getString(R.string.OPEN_WEATHER_API), getString(R.string.AMBEE_API))
-        dataCollector.setPosition(currentPos.latitude, currentPos.longitude)
+        dataCollector.setPosition(currentPos)
 
         btn.setOnClickListener {
             GlobalScope.launch {
-                dataCollector.collect()
+                dataCollector.collect(60)
             }
         }
 

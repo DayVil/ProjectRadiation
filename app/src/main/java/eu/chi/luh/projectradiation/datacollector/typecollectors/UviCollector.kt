@@ -1,19 +1,27 @@
-package eu.chi.luh.projectradiation.datacollector
+package eu.chi.luh.projectradiation.datacollector.typecollectors
 
 import android.util.Log
 import eu.chi.luh.projectradiation.entities.Uvi
-import okhttp3.*
+import eu.chi.luh.projectradiation.entities.tmp.TemporaryData
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.Request
+import okhttp3.Response
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
 import java.util.concurrent.CountDownLatch
 
+/**
+ * Only use the DataCollector for data collection purposes.
+ */
 class UviCollector(_apiKey: String): EnvironmentCollector<Uvi>(_apiKey) {
     private val _exclude = "daily,minutely"
 
     init {
+        val pos = getPosition()
         val rUrl = "https://api.openweathermap.org/data/2.5/onecall?" +
-                "lat=${this.lat}&lon=${this.lon}&exclude=${this._exclude}&appid=$_apiKey"
+                "lat=${pos.latitude}&lon=${pos.longitude}&exclude=${this._exclude}&appid=$_apiKey"
         this.request = Request.Builder().url(rUrl).build()
     }
 
@@ -80,6 +88,9 @@ class UviCollector(_apiKey: String): EnvironmentCollector<Uvi>(_apiKey) {
     override fun collect(): Uvi? {
         val countDownLatch = CountDownLatch(1)
         var uviData: Uvi? = null
+        if (TemporaryData.checkPos(getPosition())) {
+            throw AssertionError("Positions are not the same.")
+        }
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {

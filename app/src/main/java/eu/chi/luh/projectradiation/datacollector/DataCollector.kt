@@ -1,26 +1,49 @@
 package eu.chi.luh.projectradiation.datacollector
 
-import android.util.Log
+import com.google.android.gms.maps.model.LatLng
+import eu.chi.luh.projectradiation.datacollector.typecollectors.AirPollutionCollector
+import eu.chi.luh.projectradiation.datacollector.typecollectors.EnvironmentCollector
+import eu.chi.luh.projectradiation.datacollector.typecollectors.PollenCollector
+import eu.chi.luh.projectradiation.datacollector.typecollectors.UviCollector
 import eu.chi.luh.projectradiation.entities.*
-import java.util.concurrent.CountDownLatch
+import eu.chi.luh.projectradiation.entities.tmp.TemporaryData.Companion.currentPos
 import java.util.concurrent.TimeUnit
 
+/**
+ * Collects data and stores it inside the database.
+ */
+class DataCollector(
+    private val _database: AppDatabase,
+    private val _apiOpenWeather: String,
+    private val _apiAmbee: String
+) {
+    private val _uviCollector: UviCollector = UviCollector(this._apiOpenWeather)
+    private val _pollenCollector: PollenCollector = PollenCollector(this._apiAmbee)
+    private val _airQualityCollector: AirPollutionCollector = AirPollutionCollector(this._apiAmbee)
+    private val _collectors: MutableList<EnvironmentCollector<*>> =
+        mutableListOf(this._uviCollector, this._pollenCollector, this._airQualityCollector)
 
-class DataCollector(private val _database: AppDatabase, _apiOpenWeather: String, _apiAmbee: String) {
-    private val _uviCollector: UviCollector = UviCollector(_apiOpenWeather)
-    private val _pollenCollector: PollenCollector = PollenCollector(_apiAmbee)
-    private  val _airQualityCollector: AirPollutionCollector = AirPollutionCollector(_apiAmbee)
-    private val _collectors: MutableList<EnvironmentCollector<*>> = mutableListOf(_uviCollector)
+    private var _lat: Double = 0.0
+    private var _lon: Double = 0.0
 
-    private var lat: Double = 0.0
-    private var lon: Double = 0.0
+    init {
+        this.setPosition(currentPos.latitude, currentPos.longitude)
+    }
 
-    fun collect() {
+    /**
+     * Collects the data of all given types and inserts the result in the database. This can
+     * only occur every hour.
+     *
+     * @param pause (Minutes) Decides whether the collector should collect new data between the last
+     * fetch and the given time.
+     */
+    fun collect(pause: Long = 60) {
         val currentTime = System.currentTimeMillis()
+        val pauseTime = TimeUnit.MINUTES.toMillis(pause)
 
-        if (_database.environmentDao().checkEmpty() != null) {
+        if (this._database.environmentDao().checkEmpty() != null) {
             val lessOneHour =
-                currentTime - _database.environmentDao().getLast().time < TimeUnit.HOURS.toMillis(1)
+                (currentTime - this._database.environmentDao().getLast().time) < pauseTime
             if (lessOneHour)
                 return
         }
@@ -31,15 +54,26 @@ class DataCollector(private val _database: AppDatabase, _apiOpenWeather: String,
 
         val env = Environment(currentTime, uviData)
 
-        _database.environmentDao().insertAll(env) //TODO temporary
+        this._database.environmentDao().insertAll(env) //TODO temporary
     }
 
+    /**
+     * Sets the position of everything to this given position
+     */
     fun setPosition(lat: Double, lon: Double) {
-        this.lat = lat
-        this.lon = lon
+        this._lat = lat
+        this._lon = lon
+        currentPos = LatLng(this._lat, this._lon)
 
         for (collector in this._collectors) {
-            collector.setPosition(lat, lon)
+            collector.setPosition(this._lat, this._lon)
         }
+    }
+
+    /**
+     * Sets the position of everything to this given position
+     */
+    fun setPosition(pos: LatLng) {
+        this.setPosition(pos.latitude, pos.longitude)
     }
 }
