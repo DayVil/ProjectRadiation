@@ -5,7 +5,11 @@ import eu.chi.luh.projectradiation.entities.AirPollution
 /**
  * Only use the DataCollector for data collection purposes.
  */
-class AirPollutionCollector(private val _apiKey: String): EnvironmentCollector<AirPollution>(_apiKey) {
+class AirPollutionCollector(_apiKey: String) : EnvironmentCollector<AirPollution>(_apiKey) {
+    override fun makeLink(): String {
+        TODO("Not yet implemented")
+    }
+
     override fun collect(): AirPollution? {
         return AirPollution()
     }

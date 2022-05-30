@@ -9,7 +9,9 @@ import eu.chi.luh.projectradiation.entities.AppDatabase
  */
 class TemporaryData {
     companion object {
-        /** The global current position of this application. */
+        /** The global current position of this application.
+         * Warning only write in this via Datacollector current pos
+         */
         var currentPos: LatLng = LatLng(52.512454, 13.416506)
 
         /** The global database of this app. */

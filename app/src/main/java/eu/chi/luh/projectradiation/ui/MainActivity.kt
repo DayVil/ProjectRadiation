@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         dataCollector = DataCollector(
             db,
             getString(R.string.OPEN_WEATHER_API),
-            getString(R.string.AMBEE_API)
+            getString(R.string.TOMORROW_API)
         )
         dataCollector.setPosition(currentPos)
     }

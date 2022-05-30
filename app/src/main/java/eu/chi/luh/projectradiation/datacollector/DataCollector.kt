@@ -15,11 +15,12 @@ import java.util.concurrent.TimeUnit
 class DataCollector(
     private val _database: AppDatabase,
     private val _apiOpenWeather: String,
-    private val _apiAmbee: String
+    private val _tomorrowAPI: String
 ) {
     private val _uviCollector: UviCollector = UviCollector(this._apiOpenWeather)
-    private val _pollenCollector: PollenCollector = PollenCollector(this._apiAmbee)
-    private val _airQualityCollector: AirPollutionCollector = AirPollutionCollector(this._apiAmbee)
+    private val _pollenCollector: PollenCollector = PollenCollector(this._tomorrowAPI)
+    private val _airQualityCollector: AirPollutionCollector =
+        AirPollutionCollector(this._tomorrowAPI)
     private val _collectors: MutableList<EnvironmentCollector<*>> =
         mutableListOf(this._uviCollector, this._pollenCollector, this._airQualityCollector)
 
@@ -52,9 +53,9 @@ class DataCollector(
         val pollenData: Pollen? = this._pollenCollector.collect()
         val airData: AirPollution? = this._airQualityCollector.collect()
 
-        val env = Environment(currentTime, uviData)
+        val env = Environment(currentTime, uviData, pollenData)
 
-        this._database.environmentDao().insertAll(env) //TODO temporary
+        this._database.environmentDao().insertAll(env)
     }
 
     /**

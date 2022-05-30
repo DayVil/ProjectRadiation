@@ -3,6 +3,8 @@ package eu.chi.luh.projectradiation.datacollector.typecollectors
 import android.util.Log
 import eu.chi.luh.projectradiation.entities.Uvi
 import eu.chi.luh.projectradiation.entities.tmp.TemporaryData
+import eu.chi.luh.projectradiation.mathfunction.CompareOp
+import eu.chi.luh.projectradiation.mathfunction.getExtreme
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Request
@@ -18,42 +20,6 @@ import java.util.concurrent.CountDownLatch
 class UviCollector(_apiKey: String): EnvironmentCollector<Uvi>(_apiKey) {
     private val _exclude = "daily,minutely"
 
-    init {
-        val pos = getPosition()
-        val rUrl = "https://api.openweathermap.org/data/2.5/onecall?" +
-                "lat=${pos.latitude}&lon=${pos.longitude}&exclude=${this._exclude}&appid=$_apiKey"
-        this.request = Request.Builder().url(rUrl).build()
-    }
-
-    /**
-     * Finds the extreme values of a given JSONArray with a given key and comparator ('<' or '>')
-     *
-     * @exception Exception The exception will be thrown if the defined comparator is not within
-     *                      the functions limits.
-     * @param data The JSON Array to be searched.
-     * @param searchKeyword The key for the json dictionary
-     * @param compareValue This is the comparison point which the other values will be compared to
-     * @param define defines the comparator ('<' or '>')
-     * @return Return the extreme value
-     */
-    private fun getExtreme(data: JSONArray, searchKeyword: String, compareValue: Double, define: Char): Double {
-        val tmpFun: (Double, Double) -> Boolean = when (define) {
-            '<' -> { a: Double, b: Double -> a < b }
-            '>' -> { a: Double, b: Double -> a > b }
-            else -> throw Exception("Only '<' or '>' are allowed")
-        }
-        var extremeAmount: Double = compareValue
-
-        for (hourlyIndex in 0 until data.length()) {
-            val dataSet: JSONObject = data.getJSONObject(hourlyIndex)
-            val hourlyUvi = dataSet.getDouble(searchKeyword)
-
-            if (tmpFun(hourlyUvi, extremeAmount)) extremeAmount = hourlyUvi
-        }
-
-        return extremeAmount
-    }
-
     /**
      * Calculates the [current, minimum, maximum, average] uvi values over a day.
      *
@@ -68,8 +34,8 @@ class UviCollector(_apiKey: String): EnvironmentCollector<Uvi>(_apiKey) {
 
         val current: Double = rawData.getJSONObject("current").getDouble("uvi")
 
-        val minVal: Double = getExtreme(hourlySet, "uvi", current, '<')
-        val maxVal: Double = getExtreme(hourlySet, "uvi", current, '>')
+        val minVal: Double = getExtreme(hourlySet, "uvi", current, CompareOp.LESSER)
+        val maxVal: Double = getExtreme(hourlySet, "uvi", current, CompareOp.GREATER)
 
         var sum = 0.0
         for (hourlyIndex in 0 until hourlySet.length()) {
@@ -79,34 +45,48 @@ class UviCollector(_apiKey: String): EnvironmentCollector<Uvi>(_apiKey) {
         }
         val average: Double = sum / hourlySet.length()
 
-        return Uvi(response = true, uviCurrent = current, uviAverage = average, uviMinimum = minVal, uviMaximum = maxVal)
+        return Uvi(
+            response = true, uviCurrent = current, uviAverage = average,
+            uviMinimum = minVal, uviMaximum = maxVal
+        )
+    }
+
+    override fun makeLink(): String {
+        val pos = getPosition()
+        val rUrl = "https://api.openweathermap.org/data/2.5/onecall?" +
+                "lat=${pos.latitude}&lon=${pos.longitude}&exclude=${this._exclude}&appid=${this._apiKey}"
+        Log.d("UVI", rUrl)
+        return rUrl
     }
 
     /**
      * Runs the process of fetching uvi data of a day and processing it.
      */
     override fun collect(): Uvi? {
+        val rUrl = makeLink()
+        this.request = Request.Builder().url(rUrl).build()
+
         val countDownLatch = CountDownLatch(1)
         var uviData: Uvi? = null
         if (TemporaryData.checkPos(getPosition())) {
             throw AssertionError("Positions are not the same.")
         }
 
-        client.newCall(request).enqueue(object : Callback {
+        this.client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 countDownLatch.countDown()
-                Log.d("OPEN WEATHER", "Error on response.")
+                Log.d("UVI", "Error on response.")
                 uviData = Uvi(false)
                 countDownLatch.countDown()
             }
 
             override fun onResponse(call: Call, response: Response) {
-                Log.d("OPEN WEATHER", "Successfull connection")
+                Log.d("UVI", "Successful connection")
                 val rBody = response.body?.string()
                 uviData = getUviData(rBody)
 
                 Log.d(
-                    "OPEN WEATHER",
+                    "UVI",
                     "uvi measures: minimum=${uviData?.uviMinimum}\tmaximum=${uviData?.uviMaximum}" +
                             "\taverage=${uviData?.uviAverage}\tcurrent=${uviData?.uviCurrent}"
                 )

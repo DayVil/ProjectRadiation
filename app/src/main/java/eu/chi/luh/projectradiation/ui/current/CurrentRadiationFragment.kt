@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import eu.chi.luh.projectradiation.R
 import eu.chi.luh.projectradiation.datacollector.DataCollector
-import eu.chi.luh.projectradiation.entities.tmp.TemporaryData.Companion.currentPos
 import eu.chi.luh.projectradiation.entities.tmp.TemporaryData.Companion.db
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -42,8 +41,12 @@ class CurrentRadiationFragment : Fragment() {
         val btnDel = viewOfLayout.findViewById<Button>(R.id.remove_data)
 
         val dataCollector =
-            DataCollector(db, getString(R.string.OPEN_WEATHER_API), getString(R.string.AMBEE_API))
-        dataCollector.setPosition(currentPos)
+            DataCollector(
+                db,
+                getString(R.string.OPEN_WEATHER_API),
+                getString(R.string.TOMORROW_API)
+            )
+        dataCollector.setPosition(52.3759, 9.7320)
 
         btn.setOnClickListener {
             GlobalScope.launch {
