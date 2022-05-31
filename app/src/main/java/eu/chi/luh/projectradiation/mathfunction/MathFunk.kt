@@ -62,3 +62,16 @@ fun getExtreme(
 ): Double {
     return getExtreme(data, searchKeyword, compareValue.toDouble(), define)
 }
+
+fun getAverage(data: JSONArray, searchKeyword: String): Double {
+    var sum = 0.0
+
+    val amountVal = data.length()
+    for (hourlyIndex in 0 until amountVal) {
+        val dataSet: JSONObject = data.getJSONObject(hourlyIndex)
+        val hourlyData = dataSet.get(searchKeyword) as Number
+        sum += hourlyData.toDouble()
+    }
+
+    return sum / amountVal
+}

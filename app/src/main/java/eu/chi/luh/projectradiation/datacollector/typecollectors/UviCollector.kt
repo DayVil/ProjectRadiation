@@ -4,6 +4,7 @@ import android.util.Log
 import eu.chi.luh.projectradiation.entities.Uvi
 import eu.chi.luh.projectradiation.entities.tmp.TemporaryData
 import eu.chi.luh.projectradiation.mathfunction.CompareOp
+import eu.chi.luh.projectradiation.mathfunction.getAverage
 import eu.chi.luh.projectradiation.mathfunction.getExtreme
 import okhttp3.Call
 import okhttp3.Callback
@@ -37,13 +38,7 @@ class UviCollector(_apiKey: String): EnvironmentCollector<Uvi>(_apiKey) {
         val minVal: Double = getExtreme(hourlySet, "uvi", current, CompareOp.LESSER)
         val maxVal: Double = getExtreme(hourlySet, "uvi", current, CompareOp.GREATER)
 
-        var sum = 0.0
-        for (hourlyIndex in 0 until hourlySet.length()) {
-            val dataSet: JSONObject = hourlySet.getJSONObject(hourlyIndex)
-            val hourlyUvi: Double = dataSet.getDouble("uvi")
-            sum += hourlyUvi
-        }
-        val average: Double = sum / hourlySet.length()
+        val average: Double = getAverage(hourlySet, "uvi")
 
         return Uvi(
             response = true, uviCurrent = current, uviAverage = average,
