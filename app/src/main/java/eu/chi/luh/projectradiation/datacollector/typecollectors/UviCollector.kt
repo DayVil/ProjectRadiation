@@ -41,8 +41,12 @@ class UviCollector(_apiKey: String): EnvironmentCollector<Uvi>(_apiKey) {
         val average: Double = getAverage(hourlySet, "uvi")
 
         return Uvi(
-            response = true, uviCurrent = current, uviAverage = average,
-            uviMinimum = minVal, uviMaximum = maxVal
+            response = true,
+
+            uviCurrent = current,
+            uviAverage = average,
+            uviMinimum = minVal,
+            uviMaximum = maxVal
         )
     }
 
@@ -69,7 +73,6 @@ class UviCollector(_apiKey: String): EnvironmentCollector<Uvi>(_apiKey) {
 
         this.client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                countDownLatch.countDown()
                 Log.d("UVI", "Error on response.")
                 uviData = Uvi(false)
                 countDownLatch.countDown()

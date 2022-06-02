@@ -4,7 +4,7 @@ import android.util.Log
 import eu.chi.luh.projectradiation.entities.Pollen
 import eu.chi.luh.projectradiation.entities.tmp.TemporaryData
 import eu.chi.luh.projectradiation.mathfunction.CompareOp
-import eu.chi.luh.projectradiation.mathfunction.greaterlesserFun
+import eu.chi.luh.projectradiation.mathfunction.greaterLesserFun
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Request
@@ -41,7 +41,7 @@ class PollenCollector(_apiKey: String) : EnvironmentCollector<Pollen>(_apiKey) {
         compareVal: Int,
         operator: CompareOp
     ): Int {
-        val tmpFun: (Int, Int) -> Boolean = greaterlesserFun(operator)
+        val tmpFun: (Int, Int) -> Boolean = greaterLesserFun(operator)
 
         var extremeAmount = compareVal
 
@@ -89,25 +89,25 @@ class PollenCollector(_apiKey: String) : EnvironmentCollector<Pollen>(_apiKey) {
 
         //TODO rewrite as loop
         val pollenGrassCurrent = currentData.getInt("grassIndex")
-        val pollenGrassAverage = getAverage(intervals, "grassIndex")
+        val pollenGrassAverage = this.getAverage(intervals, "grassIndex")
         val pollenGrassMinimum =
-            getExtreme(intervals, "grassIndex", pollenGrassCurrent, CompareOp.LESSER)
+            this.getExtreme(intervals, "grassIndex", pollenGrassCurrent, CompareOp.LESSER)
         val pollenGrassMaximum =
-            getExtreme(intervals, "grassIndex", pollenGrassCurrent, CompareOp.GREATER)
+            this.getExtreme(intervals, "grassIndex", pollenGrassCurrent, CompareOp.GREATER)
 
         val pollenTreeCurrent = currentData.getInt("treeIndex")
-        val pollenTreeAverage = getAverage(intervals, "treeIndex")
+        val pollenTreeAverage = this.getAverage(intervals, "treeIndex")
         val pollenTreeMinimum =
-            getExtreme(intervals, "treeIndex", pollenGrassCurrent, CompareOp.LESSER)
+            this.getExtreme(intervals, "treeIndex", pollenGrassCurrent, CompareOp.LESSER)
         val pollenTreeMaximum =
-            getExtreme(intervals, "treeIndex", pollenGrassCurrent, CompareOp.GREATER)
+            this.getExtreme(intervals, "treeIndex", pollenGrassCurrent, CompareOp.GREATER)
 
         val pollenWeedCurrent = currentData.getInt("weedIndex")
-        val pollenWeedAverage = getAverage(intervals, "weedIndex")
+        val pollenWeedAverage = this.getAverage(intervals, "weedIndex")
         val pollenWeedMinimum =
-            getExtreme(intervals, "weedIndex", pollenGrassCurrent, CompareOp.LESSER)
+            this.getExtreme(intervals, "weedIndex", pollenGrassCurrent, CompareOp.LESSER)
         val pollenWeedMaximum =
-            getExtreme(intervals, "weedIndex", pollenGrassCurrent, CompareOp.GREATER)
+            this.getExtreme(intervals, "weedIndex", pollenGrassCurrent, CompareOp.GREATER)
 
         val pollenCurrent = (pollenGrassCurrent + pollenTreeCurrent + pollenWeedCurrent) / 3.0
         val pollenAverage: Double =
@@ -156,13 +156,15 @@ class PollenCollector(_apiKey: String) : EnvironmentCollector<Pollen>(_apiKey) {
 
         this.client.newCall(this.request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                TODO("Not yet implemented")
+                Log.d("Pollen", "Error on response.")
+                pollenData = Pollen(false)
+
+                countDownLatch.countDown()
             }
 
             override fun onResponse(call: Call, response: Response) {
                 Log.d("POLLEN", "Successfull connection")
                 val rBody = response.body?.string()
-                Log.d("POLLEN", rBody!!)
                 pollenData = getPollenData(rBody)
 
                 countDownLatch.countDown()

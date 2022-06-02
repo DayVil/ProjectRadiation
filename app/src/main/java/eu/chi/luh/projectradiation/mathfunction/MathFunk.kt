@@ -4,7 +4,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 
-fun <T : Comparable<T>> greaterlesserFun(def: CompareOp): (T, T) -> Boolean {
+fun <T : Comparable<T>> greaterLesserFun(def: CompareOp): (T, T) -> Boolean {
     val rFun: (T, T) -> Boolean = when (def) {
         CompareOp.LESSER -> { a: T, b: T -> a < b }
         CompareOp.GREATER -> { a: T, b: T -> a > b }
@@ -29,7 +29,7 @@ fun getExtreme(
     compareValue: Double,
     define: CompareOp
 ): Double {
-    val tmpFun: (Double, Double) -> Boolean = greaterlesserFun(define)
+    val tmpFun: (Double, Double) -> Boolean = greaterLesserFun(define)
 
     var extremeAmount: Double = compareValue
 
