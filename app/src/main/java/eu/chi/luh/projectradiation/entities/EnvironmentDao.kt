@@ -1,9 +1,6 @@
 package eu.chi.luh.projectradiation.entities
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface EnvironmentDao {
@@ -17,7 +14,7 @@ interface EnvironmentDao {
     fun checkEmpty(): Environment?
 
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg env: Environment)
 
 

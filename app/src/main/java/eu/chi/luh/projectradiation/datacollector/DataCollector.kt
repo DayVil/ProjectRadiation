@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit
  * Collects data and stores it inside the database.
  */
 class DataCollector(
-    private val _database: AppDatabase,
+    private val _database: ProjectRadiationDatabase,
     private val _apiOpenWeather: String,
     private val _tomorrowAPI: String
 ) {

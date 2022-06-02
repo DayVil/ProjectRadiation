@@ -7,13 +7,11 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
-import androidx.room.Room
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import eu.chi.luh.projectradiation.R
 import eu.chi.luh.projectradiation.datacollector.DataCollector
-import eu.chi.luh.projectradiation.entities.AppDatabase
+import eu.chi.luh.projectradiation.entities.ProjectRadiationDatabase
 import eu.chi.luh.projectradiation.entities.tmp.TemporaryData.Companion.currentPos
-import eu.chi.luh.projectradiation.entities.tmp.TemporaryData.Companion.db
 
 class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
@@ -39,8 +37,7 @@ class MainActivity : AppCompatActivity() {
         bottomNav.setupWithNavController(navController)
         NavigationUI.setupActionBarWithNavController(this, navController)
 
-        db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "environment-data")
-            .fallbackToDestructiveMigration().build()
+        val db: ProjectRadiationDatabase = ProjectRadiationDatabase.invoke(applicationContext)
 
         dataCollector = DataCollector(
             db,

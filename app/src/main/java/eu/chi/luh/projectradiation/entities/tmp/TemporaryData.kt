@@ -1,7 +1,7 @@
 package eu.chi.luh.projectradiation.entities.tmp
 
 import com.google.android.gms.maps.model.LatLng
-import eu.chi.luh.projectradiation.entities.AppDatabase
+import eu.chi.luh.projectradiation.entities.ProjectRadiationDatabase
 
 /**
  * These are some global variables to use.
@@ -13,9 +13,6 @@ class TemporaryData {
          * Warning only write in this via Datacollector current pos
          */
         var currentPos: LatLng = LatLng(52.512454, 13.416506)
-
-        /** The global database of this app. */
-        lateinit var db: AppDatabase
 
         /**
          * Checks if the positions are the same.

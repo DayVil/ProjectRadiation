@@ -5,11 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import eu.chi.luh.projectradiation.R
 import eu.chi.luh.projectradiation.datacollector.DataCollector
-import eu.chi.luh.projectradiation.entities.tmp.TemporaryData.Companion.db
+import eu.chi.luh.projectradiation.entities.ProjectRadiationDatabase
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -37,6 +38,7 @@ class CurrentRadiationFragment : Fragment() {
      * For debugging purposes
      */
     fun debugFun() {
+        val db: ProjectRadiationDatabase = ProjectRadiationDatabase.invoke(viewOfLayout.context)
         val btn = viewOfLayout.findViewById<Button>(R.id.collect_tmp)
         val btnDel = viewOfLayout.findViewById<Button>(R.id.remove_data)
 
@@ -48,15 +50,19 @@ class CurrentRadiationFragment : Fragment() {
             )
         dataCollector.setPosition(52.3759, 9.7320)
 
+        val txtView = viewOfLayout.findViewById<TextView>(R.id.textView)
+
         btn.setOnClickListener {
-            GlobalScope.launch {
+            GlobalScope.launch() {
                 dataCollector.collect(60)
+                txtView.text = db.environmentDao().getLast().pollen?.pollenTreeCurrent.toString()
             }
         }
 
         btnDel.setOnClickListener {
-            GlobalScope.launch {
+            GlobalScope.launch() {
                 db.environmentDao().deleteAll()
+                txtView.text = "EMPTY"
             }
         }
     }

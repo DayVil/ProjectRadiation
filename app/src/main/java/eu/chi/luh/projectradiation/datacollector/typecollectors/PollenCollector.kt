@@ -29,7 +29,7 @@ class PollenCollector(_apiKey: String) : EnvironmentCollector<Pollen>(_apiKey) {
         for (hourlyIndex in 0 until amountVal) {
             val dataSet: JSONObject = data.getJSONObject(hourlyIndex)
             val hourlyData = dataSet.getJSONObject("values").getInt(searchKeyword)
-            sum += hourlyData
+            sum += hourlyData.toDouble()
         }
 
         return sum / amountVal.toDouble()
@@ -98,16 +98,16 @@ class PollenCollector(_apiKey: String) : EnvironmentCollector<Pollen>(_apiKey) {
         val pollenTreeCurrent = currentData.getInt("treeIndex")
         val pollenTreeAverage = this.getAverage(intervals, "treeIndex")
         val pollenTreeMinimum =
-            this.getExtreme(intervals, "treeIndex", pollenGrassCurrent, CompareOp.LESSER)
+            this.getExtreme(intervals, "treeIndex", pollenTreeCurrent, CompareOp.LESSER)
         val pollenTreeMaximum =
-            this.getExtreme(intervals, "treeIndex", pollenGrassCurrent, CompareOp.GREATER)
+            this.getExtreme(intervals, "treeIndex", pollenTreeCurrent, CompareOp.GREATER)
 
         val pollenWeedCurrent = currentData.getInt("weedIndex")
         val pollenWeedAverage = this.getAverage(intervals, "weedIndex")
         val pollenWeedMinimum =
-            this.getExtreme(intervals, "weedIndex", pollenGrassCurrent, CompareOp.LESSER)
+            this.getExtreme(intervals, "weedIndex", pollenWeedCurrent, CompareOp.LESSER)
         val pollenWeedMaximum =
-            this.getExtreme(intervals, "weedIndex", pollenGrassCurrent, CompareOp.GREATER)
+            this.getExtreme(intervals, "weedIndex", pollenWeedCurrent, CompareOp.GREATER)
 
         val pollenCurrent = (pollenGrassCurrent + pollenTreeCurrent + pollenWeedCurrent) / 3.0
         val pollenAverage: Double =
