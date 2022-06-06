@@ -2,7 +2,7 @@ package eu.chi.luh.projectradiation.datacollector.typecollectors
 
 import android.util.Log
 import eu.chi.luh.projectradiation.entities.Pollen
-import eu.chi.luh.projectradiation.entities.tmp.TemporaryData
+import eu.chi.luh.projectradiation.map.MapData
 import eu.chi.luh.projectradiation.mathfunction.CompareOp
 import eu.chi.luh.projectradiation.mathfunction.greaterLesserFun
 import okhttp3.Call
@@ -21,6 +21,7 @@ import java.util.concurrent.CountDownLatch
  * Only use the DataCollector for data collection purposes.
  */
 class PollenCollector(_apiKey: String) : EnvironmentCollector<Pollen>(_apiKey) {
+    val mapData = MapData.invoke()
 
     private fun getAverage(data: JSONArray, searchKeyword: String): Double {
         var sum = 0.0
@@ -62,7 +63,7 @@ class PollenCollector(_apiKey: String) : EnvironmentCollector<Pollen>(_apiKey) {
         val now = utcTime.format(nowFormatter)
         val part = utcTime.format(partFormatter)
 
-        val pos = this.getPosition()
+        val pos = this.mapData.getPos()
         val fields = "treeIndex,grassIndex,weedIndex"
 
         val rUrl = "https://api.tomorrow.io/v4/timelines?" +
@@ -150,9 +151,6 @@ class PollenCollector(_apiKey: String) : EnvironmentCollector<Pollen>(_apiKey) {
 
         val countDownLatch = CountDownLatch(1)
         var pollenData: Pollen? = null
-        if (TemporaryData.checkPos(getPosition())) {
-            throw AssertionError("Positions are not the same.")
-        }
 
         this.client.newCall(this.request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {

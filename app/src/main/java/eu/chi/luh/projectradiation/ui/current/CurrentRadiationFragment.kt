@@ -11,14 +11,11 @@ import androidx.lifecycle.ViewModelProvider
 import eu.chi.luh.projectradiation.R
 import eu.chi.luh.projectradiation.datacollector.DataCollector
 import eu.chi.luh.projectradiation.entities.ProjectRadiationDatabase
+import eu.chi.luh.projectradiation.map.MapData
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class CurrentRadiationFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = CurrentRadiationFragment()
-    }
 
     private lateinit var viewModel: CurrentRadiationViewModel
     private lateinit var viewOfLayout: View
@@ -39,8 +36,11 @@ class CurrentRadiationFragment : Fragment() {
      */
     fun debugFun() {
         val db: ProjectRadiationDatabase = ProjectRadiationDatabase.invoke(viewOfLayout.context)
+        val mapData = MapData.invoke()
+
         val btn = viewOfLayout.findViewById<Button>(R.id.collect_tmp)
         val btnDel = viewOfLayout.findViewById<Button>(R.id.remove_data)
+        val txtView = viewOfLayout.findViewById<TextView>(R.id.textView)
 
         val dataCollector =
             DataCollector(
@@ -48,20 +48,19 @@ class CurrentRadiationFragment : Fragment() {
                 getString(R.string.OPEN_WEATHER_API),
                 getString(R.string.TOMORROW_API)
             )
-        dataCollector.setPosition(52.3759, 9.7320)
 
-        val txtView = viewOfLayout.findViewById<TextView>(R.id.textView)
 
         btn.setOnClickListener {
-            GlobalScope.launch() {
+            GlobalScope.launch {
                 dataCollector.collect(60)
                 txtView.text = db.environmentDao().getLast().pollen?.pollenTreeCurrent.toString()
             }
         }
 
         btnDel.setOnClickListener {
-            GlobalScope.launch() {
+            GlobalScope.launch {
                 db.environmentDao().deleteAll()
+                mapData.setPosition(33.8688, 151.2093)
                 txtView.text = "EMPTY"
             }
         }

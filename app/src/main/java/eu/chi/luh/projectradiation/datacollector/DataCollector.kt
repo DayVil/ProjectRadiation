@@ -1,12 +1,11 @@
 package eu.chi.luh.projectradiation.datacollector
 
-import com.google.android.gms.maps.model.LatLng
 import eu.chi.luh.projectradiation.datacollector.typecollectors.AirPollutionCollector
 import eu.chi.luh.projectradiation.datacollector.typecollectors.EnvironmentCollector
 import eu.chi.luh.projectradiation.datacollector.typecollectors.PollenCollector
 import eu.chi.luh.projectradiation.datacollector.typecollectors.UviCollector
 import eu.chi.luh.projectradiation.entities.*
-import eu.chi.luh.projectradiation.entities.tmp.TemporaryData.Companion.currentPos
+import eu.chi.luh.projectradiation.map.MapData
 import java.util.concurrent.TimeUnit
 
 /**
@@ -24,12 +23,7 @@ class DataCollector(
     private val _collectors: MutableList<EnvironmentCollector<*>> =
         mutableListOf(this._uviCollector, this._pollenCollector, this._airQualityCollector)
 
-    private var _lat: Double = 0.0
-    private var _lon: Double = 0.0
-
-    init {
-        this.setPosition(currentPos.latitude, currentPos.longitude)
-    }
+    private val mapData = MapData.invoke()
 
     /**
      * Collects the data of all given types and inserts the result in the database. This can
@@ -56,25 +50,5 @@ class DataCollector(
         val env = Environment(currentTime, uviData, pollenData)
 
         this._database.environmentDao().insertAll(env)
-    }
-
-    /**
-     * Sets the position of everything to this given position
-     */
-    fun setPosition(lat: Double, lon: Double) {
-        this._lat = lat
-        this._lon = lon
-        currentPos = LatLng(this._lat, this._lon)
-
-        for (collector in this._collectors) {
-            collector.setPosition(this._lat, this._lon)
-        }
-    }
-
-    /**
-     * Sets the position of everything to this given position
-     */
-    fun setPosition(pos: LatLng) {
-        this.setPosition(pos.latitude, pos.longitude)
     }
 }

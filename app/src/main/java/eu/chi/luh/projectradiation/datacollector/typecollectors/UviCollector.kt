@@ -2,7 +2,7 @@ package eu.chi.luh.projectradiation.datacollector.typecollectors
 
 import android.util.Log
 import eu.chi.luh.projectradiation.entities.Uvi
-import eu.chi.luh.projectradiation.entities.tmp.TemporaryData
+import eu.chi.luh.projectradiation.map.MapData
 import eu.chi.luh.projectradiation.mathfunction.CompareOp
 import eu.chi.luh.projectradiation.mathfunction.getAverage
 import eu.chi.luh.projectradiation.mathfunction.getExtreme
@@ -20,6 +20,7 @@ import java.util.concurrent.CountDownLatch
  */
 class UviCollector(_apiKey: String): EnvironmentCollector<Uvi>(_apiKey) {
     private val _exclude = "daily,minutely"
+    val mapData = MapData.invoke()
 
     /**
      * Calculates the [current, minimum, maximum, average] uvi values over a day.
@@ -51,7 +52,7 @@ class UviCollector(_apiKey: String): EnvironmentCollector<Uvi>(_apiKey) {
     }
 
     override fun makeLink(): String {
-        val pos = getPosition()
+        val pos = mapData.getPos()
         val rUrl = "https://api.openweathermap.org/data/2.5/onecall?" +
                 "lat=${pos.latitude}&lon=${pos.longitude}&exclude=${this._exclude}&appid=${this._apiKey}"
         Log.d("UVI", rUrl)
@@ -67,9 +68,6 @@ class UviCollector(_apiKey: String): EnvironmentCollector<Uvi>(_apiKey) {
 
         val countDownLatch = CountDownLatch(1)
         var uviData: Uvi? = null
-        if (TemporaryData.checkPos(getPosition())) {
-            throw AssertionError("Positions are not the same.")
-        }
 
         this.client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {

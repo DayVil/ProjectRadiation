@@ -11,7 +11,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import eu.chi.luh.projectradiation.R
 import eu.chi.luh.projectradiation.datacollector.DataCollector
 import eu.chi.luh.projectradiation.entities.ProjectRadiationDatabase
-import eu.chi.luh.projectradiation.entities.tmp.TemporaryData.Companion.currentPos
+import eu.chi.luh.projectradiation.map.MapData
 
 class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
@@ -38,13 +38,16 @@ class MainActivity : AppCompatActivity() {
         NavigationUI.setupActionBarWithNavController(this, navController)
 
         val db: ProjectRadiationDatabase = ProjectRadiationDatabase.invoke(applicationContext)
+        val mapData = MapData.invoke()
+
+        mapData.setPosition(52.5200, 13.4050)
 
         dataCollector = DataCollector(
             db,
             getString(R.string.OPEN_WEATHER_API),
             getString(R.string.TOMORROW_API)
         )
-        dataCollector.setPosition(currentPos)
+        mapData.printPos("MainActivity")
     }
 
     override fun onSupportNavigateUp(): Boolean {

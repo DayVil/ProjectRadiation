@@ -10,7 +10,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.MarkerOptions
 import eu.chi.luh.projectradiation.R
-import eu.chi.luh.projectradiation.entities.tmp.TemporaryData
+import eu.chi.luh.projectradiation.map.MapData
 
 class MapsFragment : Fragment() {
 
@@ -24,10 +24,11 @@ class MapsFragment : Fragment() {
          * install it inside the SupportMapFragment. This method will only be triggered once the
          * user has installed Google Play services and returned to the app.
          */
-        googleMap.addMarker(
-            MarkerOptions().position(TemporaryData.currentPos).title("Marker in Sydney")
-        )
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(TemporaryData.currentPos))
+        val mapData = MapData.invoke()
+        val currentLocation = mapData.getPos()
+        mapData.printPos("Maps")
+        googleMap.addMarker(MarkerOptions().position(currentLocation).title("Marker in Current"))
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation))
     }
 
     override fun onCreateView(
