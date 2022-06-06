@@ -36,6 +36,7 @@ class DataCollector(
         val currentTime = System.currentTimeMillis()
         val pauseTime = TimeUnit.MINUTES.toMillis(pause)
 
+
         if (this._database.environmentDao().checkEmpty() != null) {
             val lessOneHour =
                 (currentTime - this._database.environmentDao().getLast().time) < pauseTime
@@ -47,7 +48,14 @@ class DataCollector(
         val pollenData: Pollen? = this._pollenCollector.collect()
         val airData: AirPollution? = this._airQualityCollector.collect()
 
-        val env = Environment(currentTime, uviData, pollenData)
+        val env = Environment(
+            currentTime,
+            mapData.getPos().latitude,
+            mapData.getPos().longitude,
+            mapData.getCityName(),
+            uviData,
+            pollenData
+        )
 
         this._database.environmentDao().insertAll(env)
     }

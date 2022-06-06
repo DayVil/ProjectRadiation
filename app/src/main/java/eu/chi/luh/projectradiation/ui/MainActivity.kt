@@ -40,8 +40,6 @@ class MainActivity : AppCompatActivity() {
         val db: ProjectRadiationDatabase = ProjectRadiationDatabase.invoke(applicationContext)
         val mapData = MapData.invoke(getString(R.string.GOOGLE_MAPS_SDK_API))
 
-        mapData.setPosition(52.5200, 13.4050)
-
         dataCollector = DataCollector(
             db,
             getString(R.string.OPEN_WEATHER_API),

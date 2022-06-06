@@ -1,8 +1,13 @@
 package eu.chi.luh.projectradiation.map
 
+import android.content.Context
+import android.location.Address
+import android.location.Geocoder
 import android.util.Log
+import android.widget.Toast
 import com.google.android.gms.maps.model.LatLng
-import okhttp3.OkHttpClient
+import java.io.IOException
+import java.util.*
 
 /**
  * These are some global variables to use.
@@ -21,19 +26,28 @@ class MapData(var mapsApi: String?) {
         private fun createMapData(key: String?) = MapData(key)
     }
 
-    private var currentPos: LatLng = LatLng(52.512454, 13.416506)
-    private var client: OkHttpClient = OkHttpClient()
+    private var currentPos: LatLng
+    private var cityName: String
+
+    init {
+        currentPos = LatLng(52.3759, 9.7320)
+        cityName = "Hannover"
+    }
 
     fun getPos(): LatLng {
         return currentPos
     }
 
-    fun setPosition(value: LatLng) {
-        currentPos = value
+    fun setPosition(ctx: Context, value: LatLng) {
+        this.currentPos = value
+        val nowAddress = this.getReverseAddress(ctx)
+        if (nowAddress != null) {
+            this.cityName = nowAddress.locality
+        } else this.cityName = "UNKNOWN"
     }
 
-    fun setPosition(lat: Double, lon: Double) {
-        currentPos = LatLng(lat, lon)
+    fun setPosition(ctx: Context, lat: Double, lon: Double) {
+        this.setPosition(ctx, LatLng(lat, lon))
     }
 
     fun printPos(tag: String) {
@@ -44,35 +58,28 @@ class MapData(var mapsApi: String?) {
         )
     }
 
-//    fun getFullLocation(): JSONObject? {
-//        val countDownLatch = CountDownLatch(1)
-//
-//        var retJSON: JSONObject? = null
-//        val link = "https://maps.googleapis.com/maps/api/geocode/json?" +
-//                "latlng=${currentPos.latitude},${currentPos.longitude}&" +
-//                "key=${mapsApi}"
-//
-//        val request = Request.Builder().url(link).build()
-//        client.newCall(request).enqueue(object : Callback {
-//            override fun onFailure(call: Call, e: IOException) {
-//                retJSON = null
-//                countDownLatch.countDown()
-//            }
-//
-//            override fun onResponse(call: Call, response: Response) {
-//                Log.d("UVI", "Successful connection")
-//                val rawSJSON = response.body?.string() ?: return onFailure(
-//                    call,
-//                    IOException("EMPTY")
-//                )
-//                retJSON = JSONObject(rawSJSON)
-//                countDownLatch.countDown()
-//            }
-//
-//        })
-//
-//        countDownLatch.await()
-//        Log.d("MapData", retJSON.toString())
-//        return retJSON
-//    }
+    fun getReverseAddress(ctx: Context): Address? {
+        val reverseGeolocation = Geocoder(ctx, Locale.getDefault())
+
+        try {
+            val addressNow = reverseGeolocation.getFromLocation(
+                this.currentPos.latitude,
+                this.currentPos.longitude,
+                1
+            )
+            if (addressNow != null && addressNow.isNotEmpty()) {
+                Log.d("MapData", addressNow.toString())
+                return addressNow[0]
+            }
+
+        } catch (e: IOException) {
+            Toast.makeText(ctx, "Unable connect to Geocoder", Toast.LENGTH_LONG).show()
+        }
+
+        return null
+    }
+
+    fun getCityName(): String {
+        return cityName
+    }
 }

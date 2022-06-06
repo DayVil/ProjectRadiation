@@ -1,6 +1,7 @@
 package eu.chi.luh.projectradiation.ui.current
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,6 +50,7 @@ class CurrentRadiationFragment : Fragment() {
                 getString(R.string.TOMORROW_API)
             )
 
+        Log.d("MapData", mapData.getCityName())
         btn.setOnClickListener {
             GlobalScope.launch {
                 dataCollector.collect(60)
@@ -58,8 +60,8 @@ class CurrentRadiationFragment : Fragment() {
 
         btnDel.setOnClickListener {
             GlobalScope.launch {
+                mapData.setPosition(requireContext(), 51.030441, -1.294777)
                 db.environmentDao().deleteAll()
-                mapData.setPosition(33.8688, 151.2093)
                 txtView.text = "EMPTY"
             }
         }
