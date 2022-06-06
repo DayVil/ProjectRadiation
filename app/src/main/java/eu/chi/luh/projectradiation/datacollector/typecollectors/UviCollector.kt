@@ -63,10 +63,10 @@ class UviCollector(_apiKey: String): EnvironmentCollector<Uvi>(_apiKey) {
      * Runs the process of fetching uvi data of a day and processing it.
      */
     override fun collect(): Uvi? {
+        val countDownLatch = CountDownLatch(1)
         val rUrl = makeLink()
         this.request = Request.Builder().url(rUrl).build()
 
-        val countDownLatch = CountDownLatch(1)
         var uviData: Uvi? = null
 
         this.client.newCall(request).enqueue(object : Callback {

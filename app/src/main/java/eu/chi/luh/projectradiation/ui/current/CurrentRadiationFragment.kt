@@ -49,7 +49,6 @@ class CurrentRadiationFragment : Fragment() {
                 getString(R.string.TOMORROW_API)
             )
 
-
         btn.setOnClickListener {
             GlobalScope.launch {
                 dataCollector.collect(60)

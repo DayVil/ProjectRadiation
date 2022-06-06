@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         NavigationUI.setupActionBarWithNavController(this, navController)
 
         val db: ProjectRadiationDatabase = ProjectRadiationDatabase.invoke(applicationContext)
-        val mapData = MapData.invoke()
+        val mapData = MapData.invoke(getString(R.string.GOOGLE_MAPS_SDK_API))
 
         mapData.setPosition(52.5200, 13.4050)
 
