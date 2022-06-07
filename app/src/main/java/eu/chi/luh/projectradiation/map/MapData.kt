@@ -40,10 +40,7 @@ class MapData(var mapsApi: String?) {
 
     fun setPosition(ctx: Context, value: LatLng) {
         this.currentPos = value
-        val nowAddress = this.getReverseAddress(ctx)
-        if (nowAddress != null) {
-            this.cityName = nowAddress.locality
-        } else this.cityName = "UNKNOWN"
+        this.cityName = this.getReverseAddressName(ctx)
     }
 
     fun setPosition(ctx: Context, lat: Double, lon: Double) {
@@ -58,13 +55,13 @@ class MapData(var mapsApi: String?) {
         )
     }
 
-    fun getReverseAddress(ctx: Context): Address? {
+    fun getReverseAddress(ctx: Context, cords: LatLng): Address? {
         val reverseGeolocation = Geocoder(ctx, Locale.getDefault())
 
         try {
             val addressNow = reverseGeolocation.getFromLocation(
-                this.currentPos.latitude,
-                this.currentPos.longitude,
+                cords.latitude,
+                cords.longitude,
                 1
             )
             if (addressNow != null && addressNow.isNotEmpty()) {
@@ -77,6 +74,24 @@ class MapData(var mapsApi: String?) {
         }
 
         return null
+    }
+
+    fun getReverseAddress(ctx: Context): Address? {
+        return getReverseAddress(ctx, this.getPos())
+    }
+
+    fun getReverseAddressName(ctx: Context, cords: LatLng): String {
+        val tmpAddress: Address? = getReverseAddress(ctx, cords)
+        var ctyName = "UNKNOWN"
+        if (tmpAddress != null) {
+            ctyName = tmpAddress.locality
+        }
+
+        return ctyName
+    }
+
+    fun getReverseAddressName(ctx: Context): String {
+        return getReverseAddressName(ctx, this.getPos())
     }
 
     fun getCityName(): String {
