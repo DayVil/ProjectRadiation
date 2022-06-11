@@ -4,16 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.core.view.get
 import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.card.MaterialCardView
 import eu.chi.luh.projectradiation.R
 import eu.chi.luh.projectradiation.datacollector.DataCollector
 import eu.chi.luh.projectradiation.entities.ProjectRadiationDatabase
@@ -51,11 +50,12 @@ class CurrentRadiationFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(CurrentRadiationViewModel::class.java)
+        viewModel = ViewModelProvider(this)[CurrentRadiationViewModel::class.java]
         // TODO: Use the ViewModel
     }
 
     private fun preRun() {
+        // Initialise
         db = ProjectRadiationDatabase.invoke(viewOfLayout.context)
         mapData = MapData.invoke()
         fusedLocationProviderClient =
@@ -65,43 +65,84 @@ class CurrentRadiationFragment : Fragment() {
             getString(R.string.OPEN_WEATHER_API),
             getString(R.string.TOMORROW_API)
         )
-        // TODO Make this work
-//        val tmpLocation = mapData.getCurrentLocation(requireActivity(), fusedLocationProviderClient)
-//        mapData.setPosition(requireContext(), tmpLocation)
+
+        // Elements on Display
+        val search = viewOfLayout.findViewById<SearchView>(R.id.place_searcher)
+        search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+                search.clearFocus()
+
+                var tmpString = ""
+                var hasContent = false
+                if (p0 != null) {
+                    tmpString = p0
+                    hasContent = true
+                }
+
+                val location = mapData.getAddressLocation(requireContext(), tmpString)
+                mapData.setPosition(requireContext(), location)
+                dataCollector.collect()
+                update()
+
+                return hasContent
+            }
+
+            override fun onQueryTextChange(p0: String?): Boolean {
+                return false
+            }
+
+        })
+
+        val refresh = viewOfLayout.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh)
+        refresh.setOnRefreshListener {
+            mapData.setPosition(requireContext(), 52.455319, 10.203917)
+            dataCollector.collect()
+            update()
+            refresh.isRefreshing = false
+        }
+
+        // Run from current location
+        mapData.setFromCurrentLocation(requireActivity(), fusedLocationProviderClient)
         dataCollector.collect()
     }
 
-    // TODO make it async
-    fun update() {
-        val pCard = viewOfLayout.findViewById<LinearLayout>(R.id.primary_linear)
-        val elemLen = pCard.size
+    private fun update() {
+        val cardStack = viewOfLayout.findViewById<ScrollView>(R.id.scroll_cards)
+        val cardsAmount = cardStack.size
 
-        val cityName: TextView = pCard[0] as TextView
+        for (i in 0 until cardsAmount) {
+            val selectCard = cardStack[0] as MaterialCardView
+            val selectLayout = selectCard[0] as LinearLayout
 
-        val tmpUviNow: RelativeLayout = pCard[1] as RelativeLayout
-        val uviNow: TextView = tmpUviNow[1] as TextView
+            val amountVal = selectLayout.size
 
-        val tmpPollenAverage: RelativeLayout = pCard[2] as RelativeLayout
-        val pollenAverage: TextView = tmpPollenAverage[1] as TextView
+            val cityName: TextView = selectLayout[0] as TextView
 
-        val tmpTime: RelativeLayout = pCard[elemLen - 1] as RelativeLayout
-        val time: TextView = tmpTime[1] as TextView
+            val tmpUviNow: RelativeLayout = selectLayout[1] as RelativeLayout
+            val uviNow: TextView = tmpUviNow[1] as TextView
 
-        if (db.environmentDao().checkEmpty() == null) return
+            val tmpPollenAverage: RelativeLayout = selectLayout[2] as RelativeLayout
+            val pollenAverage: TextView = tmpPollenAverage[1] as TextView
 
-        val lastEntry = db.environmentDao().getLast()
+            val tmpTime: RelativeLayout = selectLayout[amountVal - 1] as RelativeLayout
+            val time: TextView = tmpTime[1] as TextView
 
-        val formatter = DateTimeFormatter.ofPattern("HH:mm   dd.MM.yyyy")
-        val instant = Instant.ofEpochMilli(lastEntry.time)
-        val date = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
+            if (db.environmentDao().checkEmpty() == null) return
 
-        cityName.text = lastEntry.name
-        time.text = formatter.format(date)
-        uviNow.text = String.format("%.2f", lastEntry.uvi?.uviAverage)
-        pollenAverage.text = String.format("%.2f", lastEntry.pollen?.pollenAverage)
+            val lastEntry = db.environmentDao().getLast()
+
+            val formatter = DateTimeFormatter.ofPattern("HH:mm   dd.MM.yyyy")
+            val instant = Instant.ofEpochMilli(lastEntry.time)
+            val date = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
+
+            cityName.text = lastEntry.name
+            time.text = formatter.format(date)
+            uviNow.text = String.format("%.2f", lastEntry.uvi?.uviAverage)
+            pollenAverage.text = String.format("%.2f", lastEntry.pollen?.pollenAverage)
+        }
     }
 
-    fun debug() {
+    private fun debug() {
         val btn = viewOfLayout.findViewById<Button>(R.id.del)
         val upt = viewOfLayout.findViewById<Button>(R.id.update)
 

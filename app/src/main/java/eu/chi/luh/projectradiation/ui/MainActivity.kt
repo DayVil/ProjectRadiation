@@ -23,7 +23,6 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         preRun()
-        debug()
     }
 
     /**
@@ -60,9 +59,5 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         return NavigationUI.navigateUp(navController, null)
-    }
-
-    private fun debug() {
-        mapData.setPosition(applicationContext, 53.540372, 9.902514)
     }
 }

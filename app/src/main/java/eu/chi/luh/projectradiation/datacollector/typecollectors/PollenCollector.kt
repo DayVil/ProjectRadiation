@@ -21,7 +21,7 @@ import java.util.concurrent.CountDownLatch
  * Only use the DataCollector for data collection purposes.
  */
 class PollenCollector(_apiKey: String) : EnvironmentCollector<Pollen>(_apiKey) {
-    val mapData = MapData.invoke()
+    private val mapData = MapData.invoke()
 
     private fun getAverage(data: JSONArray, searchKeyword: String): Double {
         var sum = 0.0
