@@ -19,7 +19,13 @@ abstract class ProjectRadiationDatabase: RoomDatabase() {
         }
 
         private fun buildDatabase(context: Context) =
-            Room.databaseBuilder(context.applicationContext, ProjectRadiationDatabase::class.java, "environment-data")
-                .fallbackToDestructiveMigration().build()
+            Room.databaseBuilder(
+                context.applicationContext,
+                ProjectRadiationDatabase::class.java,
+                "environment-data"
+            )
+                .allowMainThreadQueries()
+                .fallbackToDestructiveMigration()
+                .build()
     }
 }

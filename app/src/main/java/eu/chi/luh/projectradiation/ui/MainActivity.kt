@@ -9,13 +9,12 @@ import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import eu.chi.luh.projectradiation.R
-import eu.chi.luh.projectradiation.datacollector.DataCollector
 import eu.chi.luh.projectradiation.entities.ProjectRadiationDatabase
 import eu.chi.luh.projectradiation.map.MapData
 
 class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
-    private lateinit var dataCollector: DataCollector
+    private lateinit var mapData: MapData
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +23,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         preRun()
+        debug()
     }
 
     /**
@@ -38,17 +38,31 @@ class MainActivity : AppCompatActivity() {
         NavigationUI.setupActionBarWithNavController(this, navController)
 
         val db: ProjectRadiationDatabase = ProjectRadiationDatabase.invoke(applicationContext)
-        val mapData = MapData.invoke(getString(R.string.GOOGLE_MAPS_SDK_API))
+        mapData = MapData.invoke(getString(R.string.GOOGLE_MAPS_SDK_API))
 
-        dataCollector = DataCollector(
-            db,
-            getString(R.string.OPEN_WEATHER_API),
-            getString(R.string.TOMORROW_API)
-        )
         mapData.printPos("MainActivity")
     }
 
+//    override fun onRequestPermissionsResult(
+//        requestCode: Int,
+//        permissions: Array<out String>,
+//        grantResults: IntArray
+//    ) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+//
+//        if (requestCode == RequestCodes.PERMISSION_REQUEST_ACCESS_LOCATION) {
+//            if (grantResults.isNotEmpty() && grantResults[0]==PackageManager.PERMISSION_GRANTED) {
+//
+//            }
+//        }
+//    }
+
+
     override fun onSupportNavigateUp(): Boolean {
         return NavigationUI.navigateUp(navController, null)
+    }
+
+    private fun debug() {
+        mapData.setPosition(applicationContext, 53.540372, 9.902514)
     }
 }

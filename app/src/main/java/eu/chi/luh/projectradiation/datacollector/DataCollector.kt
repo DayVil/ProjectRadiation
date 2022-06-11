@@ -33,6 +33,7 @@ class DataCollector(
      * fetch and the given time.
      */
     fun collect(pause: Long = 60) {
+        // TODO: It has to check for the place name as well otherwise this will not work due to the time limitation
         val currentTime = System.currentTimeMillis()
         val pauseTime = TimeUnit.MINUTES.toMillis(pause)
 
