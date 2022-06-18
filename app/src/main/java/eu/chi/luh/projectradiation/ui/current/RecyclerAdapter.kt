@@ -1,24 +1,61 @@
 package eu.chi.luh.projectradiation.ui.current
 
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import eu.chi.luh.projectradiation.R
+import eu.chi.luh.projectradiation.entities.ProjectRadiationDatabase
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
+    private lateinit var db: ProjectRadiationDatabase
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerAdapter.ViewHolder {
-        TODO("Not yet implemented")
+        val v = LayoutInflater.from(parent.context)
+            .inflate(R.layout.recycler_view_summary_data, parent, false)
+
+        db = ProjectRadiationDatabase.invoke(parent.context)
+        return ViewHolder(v)
     }
 
     override fun onBindViewHolder(holder: RecyclerAdapter.ViewHolder, position: Int) {
-        TODO("Not yet implemented")
+        db.environmentDao().getAll().let { allData ->
+            val data = allData[position]
+
+            val title = "${data.cityName}, ${data.countryName}"
+            holder.locationName.text = title
+
+            holder.uviValue.text = String.format("%.2f", data.uvi?.uviCurrent)
+            holder.pollenValue.text = String.format("%.2f", data.pollen?.pollenCurrent)
+
+            val formatter = DateTimeFormatter.ofPattern("HH:mm   dd.MM.yyyy")
+            val instant = Instant.ofEpochMilli(data.time)
+            val date = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
+
+            holder.timeValue.text = formatter.format(date)
+        }
     }
 
     override fun getItemCount(): Int {
-        TODO("Not yet implemented")
+        return db.environmentDao().getCount()
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-//        var locationName: TextView
+        var locationName: TextView
+        var uviValue: TextView
+        var pollenValue: TextView
+        var timeValue: TextView
+
+        init {
+            locationName = itemView.findViewById(R.id.location)
+            uviValue = itemView.findViewById(R.id.uvi_value)
+            pollenValue = itemView.findViewById(R.id.pollen_value)
+            timeValue = itemView.findViewById(R.id.update_value)
+        }
     }
 }

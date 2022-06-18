@@ -40,7 +40,7 @@ class DataCollector(
         if (this._database.environmentDao().checkEmpty() != null) {
             val lessOneHour =
                 (currentTime - this._database.environmentDao().getLast().time) < pauseTime
-            val ctyName = this._database.environmentDao().getLast().name
+            val ctyName = this._database.environmentDao().getLast().cityName
 
             if (lessOneHour && ctyName == mapData.getCityName())
                 return
