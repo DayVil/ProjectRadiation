@@ -95,7 +95,6 @@ class CurrentRadiationFragment : Fragment() {
 
         val refresh = viewOfLayout.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh)
         refresh.setOnRefreshListener {
-            mapData.setPosition(requireContext(), 52.455319, 10.203917)
             dataCollector.collect()
             update()
             refresh.isRefreshing = false
@@ -106,15 +105,17 @@ class CurrentRadiationFragment : Fragment() {
         dataCollector.collect()
     }
 
+    // TODO Uvi is shown wrong
     private fun update() {
         val cardStack = viewOfLayout.findViewById<ScrollView>(R.id.scroll_cards)
         val cardsAmount = cardStack.size
 
         for (i in 0 until cardsAmount) {
-            val selectCard = cardStack[0] as MaterialCardView
-            val selectLayout = selectCard[0] as LinearLayout
+            val selectCard = cardStack[0] as MaterialCardView // Gets the Material Card
+            val selectLayout =
+                selectCard[0] as LinearLayout // Gets the components from the Material Card
 
-            val amountVal = selectLayout.size
+            val amountVal = selectLayout.size // Amount of Components
 
             val cityName: TextView = selectLayout[0] as TextView
 
@@ -122,23 +123,28 @@ class CurrentRadiationFragment : Fragment() {
             val uviNow: TextView = tmpUviNow[1] as TextView
 
             val tmpPollenAverage: RelativeLayout = selectLayout[2] as RelativeLayout
-            val pollenAverage: TextView = tmpPollenAverage[1] as TextView
+            val pollenNow: TextView = tmpPollenAverage[1] as TextView
 
             val tmpTime: RelativeLayout = selectLayout[amountVal - 1] as RelativeLayout
             val time: TextView = tmpTime[1] as TextView
 
             if (db.environmentDao().checkEmpty() == null) return
 
+            // Fill in the components
             val lastEntry = db.environmentDao().getLast()
 
             val formatter = DateTimeFormatter.ofPattern("HH:mm   dd.MM.yyyy")
             val instant = Instant.ofEpochMilli(lastEntry.time)
             val date = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
 
-            cityName.text = lastEntry.name
+            // TODO round number if numbers are not fractions
+            val displayText = "${lastEntry.name}, ${lastEntry.countryName}"
+            cityName.text = displayText
+
+            uviNow.text = String.format("%.2f", lastEntry.uvi?.uviCurrent)
+            pollenNow.text = String.format("%.2f", lastEntry.pollen?.pollenCurrent)
+
             time.text = formatter.format(date)
-            uviNow.text = String.format("%.2f", lastEntry.uvi?.uviAverage)
-            pollenAverage.text = String.format("%.2f", lastEntry.pollen?.pollenAverage)
         }
     }
 
