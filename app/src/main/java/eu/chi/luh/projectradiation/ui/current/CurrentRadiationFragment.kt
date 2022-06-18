@@ -9,6 +9,8 @@ import androidx.core.view.get
 import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -28,12 +30,14 @@ class CurrentRadiationFragment : Fragment() {
 
     private lateinit var viewModel: CurrentRadiationViewModel
     private lateinit var viewOfLayout: View
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     private lateinit var db: ProjectRadiationDatabase
     private lateinit var dataCollector: DataCollector
-    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-
     private lateinit var mapData: MapData
+
+    private var layoutManager: RecyclerView.LayoutManager? = null
+    private var adapter: RecyclerView.Adapter<RecyclerAdapter.ViewHolder>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,7 +59,7 @@ class CurrentRadiationFragment : Fragment() {
     }
 
     private fun preRun() {
-        // Initialise
+        // Inits
         db = ProjectRadiationDatabase.invoke(viewOfLayout.context)
         mapData = MapData.invoke()
         fusedLocationProviderClient =
@@ -65,8 +69,11 @@ class CurrentRadiationFragment : Fragment() {
             getString(R.string.OPEN_WEATHER_API),
             getString(R.string.TOMORROW_API)
         )
+        // TODO continue this! ref https://www.youtube.com/watch?v=UCddGYMQJCo&t=673s
+        layoutManager = LinearLayoutManager(requireContext())
 
         // Elements on Display
+        // Search Bar
         val search = viewOfLayout.findViewById<SearchView>(R.id.place_searcher)
         search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
@@ -93,6 +100,7 @@ class CurrentRadiationFragment : Fragment() {
 
         })
 
+        // Refresher
         val refresh = viewOfLayout.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh)
         refresh.setOnRefreshListener {
             dataCollector.collect()
@@ -100,12 +108,11 @@ class CurrentRadiationFragment : Fragment() {
             refresh.isRefreshing = false
         }
 
-        // Run from current location
+        // Run and set from current location
         mapData.setFromCurrentLocation(requireActivity(), fusedLocationProviderClient)
         dataCollector.collect()
     }
 
-    // TODO Uvi is shown wrong
     private fun update() {
         val cardStack = viewOfLayout.findViewById<ScrollView>(R.id.scroll_cards)
         val cardsAmount = cardStack.size
@@ -138,7 +145,7 @@ class CurrentRadiationFragment : Fragment() {
             val date = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
 
             // TODO round number if numbers are not fractions
-            val displayText = "${lastEntry.name}, ${lastEntry.countryName}"
+            val displayText = "${lastEntry.cityName}, ${lastEntry.countryName}"
             cityName.text = displayText
 
             uviNow.text = String.format("%.2f", lastEntry.uvi?.uviCurrent)
@@ -147,6 +154,11 @@ class CurrentRadiationFragment : Fragment() {
             time.text = formatter.format(date)
         }
     }
+
+    // TODO continue this!
+//    private fun update() {
+//
+//    }
 
     private fun debug() {
         val btn = viewOfLayout.findViewById<Button>(R.id.del)
