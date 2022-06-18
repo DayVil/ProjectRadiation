@@ -37,6 +37,7 @@ class MapData(var mapsApi: String?) {
 
     private var currentPos: LatLng
     private var cityName: String
+    private var countryName: String
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     /**
@@ -45,6 +46,7 @@ class MapData(var mapsApi: String?) {
     init {
         currentPos = LatLng(52.3759, 9.7320)
         cityName = "Hannover"
+        countryName = "Germany"
     }
 
     /**
@@ -65,6 +67,7 @@ class MapData(var mapsApi: String?) {
     fun setPosition(ctx: Context, value: LatLng) {
         this.currentPos = value
         this.cityName = this.getReverseAddressName(ctx)
+        this.countryName = this.getCountryFromCords(ctx)
     }
 
     /**
@@ -149,8 +152,10 @@ class MapData(var mapsApi: String?) {
     fun getReverseAddressName(ctx: Context, cords: LatLng): String {
         val tmpAddress: Address? = getReverseAddress(ctx, cords)
         var ctyName = "UNKNOWN"
+
         if (tmpAddress != null) {
-            ctyName = tmpAddress.locality
+            ctyName = if (tmpAddress.locality != null) tmpAddress.locality
+            else tmpAddress.adminArea
         }
 
         return ctyName
@@ -164,10 +169,34 @@ class MapData(var mapsApi: String?) {
     }
 
     /**
+     *  Gets the country from a given Location
+     */
+    fun getCountryFromCords(ctx: Context, cords: LatLng): String {
+        val tmpAddress: Address? = getReverseAddress(ctx, cords)
+        var countryName = "UNKNOWN"
+        if (tmpAddress != null) {
+            countryName = tmpAddress.countryName
+        }
+
+        return countryName
+    }
+
+    /**
+     * Gets the country from a given Location
+     */
+    fun getCountryFromCords(ctx: Context): String {
+        return getCountryFromCords(ctx, this.getPos())
+    }
+
+    /**
      * Gets the city name
      */
     fun getCityName(): String {
         return cityName
+    }
+
+    fun getCountry(): String {
+        return countryName
     }
 
     /**

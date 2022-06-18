@@ -11,6 +11,7 @@ data class Environment(
     @ColumnInfo(name = "latitude") val lat: Double,
     @ColumnInfo(name = "longitude") val lon: Double,
     @ColumnInfo(name = "city_name") val name: String,
+    @ColumnInfo(name = "country_name") val countryName: String,
     @Embedded val uvi: Uvi?,
     @Embedded val pollen: Pollen?
 //    @Embedded val airPollution: AirPollution?

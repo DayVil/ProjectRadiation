@@ -55,6 +55,7 @@ class DataCollector(
             mapData.getPos().latitude,
             mapData.getPos().longitude,
             mapData.getCityName(),
+            mapData.getCountry(),
             uviData,
             pollenData
         )

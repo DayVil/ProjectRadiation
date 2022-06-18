@@ -60,7 +60,6 @@
                         android:layout_marginBottom="5dp"
                         android:text="City Name" />
 
-
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
@@ -115,9 +114,12 @@
                             android:layout_marginStart="240dp"
                             android:text="time" />
                     </RelativeLayout>
+
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
         </ScrollView>
+
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <Button
