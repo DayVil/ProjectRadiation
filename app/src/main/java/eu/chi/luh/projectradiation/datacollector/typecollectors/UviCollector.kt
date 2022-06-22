@@ -79,13 +79,11 @@ class UviCollector(_apiKey: String): EnvironmentCollector<Uvi>(_apiKey) {
             override fun onResponse(call: Call, response: Response) {
                 Log.d("UVI", "Successful connection")
                 val rBody = response.body?.string()
-                uviData = getUviData(rBody)
-
-                Log.d(
-                    "UVI",
-                    "uvi measures: minimum=${uviData?.uviMinimum}\tmaximum=${uviData?.uviMaximum}" +
-                            "\taverage=${uviData?.uviAverage}\tcurrent=${uviData?.uviCurrent}"
-                )
+                uviData = try {
+                    getUviData(rBody)
+                } catch (_: Exception) {
+                    Uvi(false)
+                }
                 countDownLatch.countDown()
             }
         })

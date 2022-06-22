@@ -4,31 +4,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
-import androidx.core.view.get
-import androidx.core.view.size
+import android.widget.Button
+import android.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.material.card.MaterialCardView
 import eu.chi.luh.projectradiation.R
 import eu.chi.luh.projectradiation.datacollector.DataCollector
 import eu.chi.luh.projectradiation.entities.ProjectRadiationDatabase
 import eu.chi.luh.projectradiation.map.MapData
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 
 class CurrentRadiationFragment : Fragment() {
 
-    private lateinit var viewModel: CurrentRadiationViewModel
     private lateinit var viewOfLayout: View
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
@@ -52,12 +46,6 @@ class CurrentRadiationFragment : Fragment() {
         return viewOfLayout
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this)[CurrentRadiationViewModel::class.java]
-        // TODO: Use the ViewModel
-    }
-
     private fun preRun() {
         // Inits
         db = ProjectRadiationDatabase.invoke(viewOfLayout.context)
@@ -69,8 +57,14 @@ class CurrentRadiationFragment : Fragment() {
             getString(R.string.OPEN_WEATHER_API),
             getString(R.string.TOMORROW_API)
         )
-        // TODO continue this! ref https://www.youtube.com/watch?v=UCddGYMQJCo&t=673s
+
+        // Recycler view init
+        val recView = viewOfLayout.findViewById<RecyclerView>(R.id.recyclerView)
         layoutManager = LinearLayoutManager(requireContext())
+        recView.layoutManager = layoutManager
+        adapter = RecyclerAdapter()
+        recView.adapter = adapter
+
 
         // Elements on Display
         // Search Bar
@@ -102,6 +96,7 @@ class CurrentRadiationFragment : Fragment() {
 
         // Refresher
         val refresh = viewOfLayout.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh)
+        refresh.setColorSchemeColors(viewOfLayout.resources.getColor(R.color.orange_l))
         refresh.setOnRefreshListener {
             dataCollector.collect()
             update()
@@ -114,66 +109,27 @@ class CurrentRadiationFragment : Fragment() {
     }
 
     private fun update() {
-        val cardStack = viewOfLayout.findViewById<ScrollView>(R.id.scroll_cards)
-        val cardsAmount = cardStack.size
-
-        for (i in 0 until cardsAmount) {
-            val selectCard = cardStack[0] as MaterialCardView // Gets the Material Card
-            val selectLayout =
-                selectCard[0] as LinearLayout // Gets the components from the Material Card
-
-            val amountVal = selectLayout.size // Amount of Components
-
-            val cityName: TextView = selectLayout[0] as TextView
-
-            val tmpUviNow: RelativeLayout = selectLayout[1] as RelativeLayout
-            val uviNow: TextView = tmpUviNow[1] as TextView
-
-            val tmpPollenAverage: RelativeLayout = selectLayout[2] as RelativeLayout
-            val pollenNow: TextView = tmpPollenAverage[1] as TextView
-
-            val tmpTime: RelativeLayout = selectLayout[amountVal - 1] as RelativeLayout
-            val time: TextView = tmpTime[1] as TextView
-
-            if (db.environmentDao().checkEmpty() == null) return
-
-            // Fill in the components
-            val lastEntry = db.environmentDao().getLast()
-
-            val formatter = DateTimeFormatter.ofPattern("HH:mm   dd.MM.yyyy")
-            val instant = Instant.ofEpochMilli(lastEntry.time)
-            val date = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
-
-            // TODO round number if numbers are not fractions
-            val displayText = "${lastEntry.cityName}, ${lastEntry.countryName}"
-            cityName.text = displayText
-
-            uviNow.text = String.format("%.2f", lastEntry.uvi?.uviCurrent)
-            pollenNow.text = String.format("%.2f", lastEntry.pollen?.pollenCurrent)
-
-            time.text = formatter.format(date)
+        try {
+            lifecycleScope.launch {
+                delay(1L)
+                adapter?.notifyDataSetChanged()
+            }
+        } catch (e: Exception) {
+            lifecycleScope.launch {
+                delay(3L)
+                adapter?.notifyDataSetChanged()
+            }
         }
     }
 
-    // TODO continue this!
-//    private fun update() {
-//
-//    }
-
     private fun debug() {
         val btn = viewOfLayout.findViewById<Button>(R.id.del)
-        val upt = viewOfLayout.findViewById<Button>(R.id.update)
 
         btn.setOnClickListener {
             GlobalScope.launch {
                 db.environmentDao().deleteAll()
+                update()
             }
-        }
-
-        upt.setOnClickListener {
-            mapData.setPosition(requireContext(), 52.455319, 10.203917)
-            dataCollector.collect()
-            update()
         }
     }
 }

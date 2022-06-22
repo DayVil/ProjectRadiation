@@ -163,7 +163,12 @@ class PollenCollector(_apiKey: String) : EnvironmentCollector<Pollen>(_apiKey) {
             override fun onResponse(call: Call, response: Response) {
                 Log.d("POLLEN", "Successfull connection")
                 val rBody = response.body?.string()
-                pollenData = getPollenData(rBody)
+
+                pollenData = try {
+                    getPollenData(rBody)
+                } catch (e: Exception) {
+                    Pollen(false)
+                }
 
                 countDownLatch.countDown()
             }

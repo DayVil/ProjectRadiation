@@ -25,6 +25,8 @@ class MainActivity : AppCompatActivity() {
         preRun()
     }
 
+    // TODO make the names on top pretty
+
     /**
      * Runs the necessary steps before final launch
      */

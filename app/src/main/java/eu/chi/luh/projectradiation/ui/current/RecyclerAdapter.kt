@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import eu.chi.luh.projectradiation.R
 import eu.chi.luh.projectradiation.entities.ProjectRadiationDatabase
@@ -14,6 +15,7 @@ import java.time.format.DateTimeFormatter
 
 class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
     private lateinit var db: ProjectRadiationDatabase
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerAdapter.ViewHolder {
         val v = LayoutInflater.from(parent.context)
@@ -42,7 +44,11 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
     }
 
     override fun getItemCount(): Int {
-        return db.environmentDao().getCount()
+        if (::db.isInitialized) {
+            val amountDatabase = db.environmentDao().getCount()
+            return amountDatabase
+        }
+        return 1
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -50,6 +56,20 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
         var uviValue: TextView = itemView.findViewById(R.id.uvi_value)
         var pollenValue: TextView = itemView.findViewById(R.id.pollen_value)
         var timeValue: TextView = itemView.findViewById(R.id.update_value)
+
+        init {
+            itemView.setOnClickListener {
+                val position: Int = adapterPosition
+
+                val name = db.environmentDao().getAll()
+                //TODO open Fragment with more data
+                Toast.makeText(
+                    itemView.context,
+                    "You clicked on ${name[position].cityName}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
 
     }
 }

@@ -21,6 +21,8 @@ interface EnvironmentDao {
     fun insertAll(vararg env: Environment)
 
 
+    //TODO make the DAO delete last items
+
     @Delete
     fun delete(env: Environment)
 
