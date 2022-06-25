@@ -10,6 +10,9 @@ interface EnvironmentDao {
     @Query("SELECT * FROM Environment ORDER BY time DESC LIMIT 1")
     fun getLast(): Environment
 
+    @Query("SELECT * FROM Environment ORDER BY time ASC LIMIT 1")
+    fun getFirst(): Environment
+
     @Query("SELECT * FROM Environment LIMIT 1")
     fun checkEmpty(): Environment?
 

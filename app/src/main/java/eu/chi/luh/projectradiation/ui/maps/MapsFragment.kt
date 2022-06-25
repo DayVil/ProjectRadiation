@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -13,6 +14,7 @@ import eu.chi.luh.projectradiation.R
 import eu.chi.luh.projectradiation.map.MapData
 
 class MapsFragment : Fragment() {
+    private lateinit var viewOfLayout: View
 
     private val callback = OnMapReadyCallback { googleMap ->
         /**
@@ -36,7 +38,13 @@ class MapsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_maps, container, false)
+        viewOfLayout = inflater.inflate(R.layout.fragment_maps, container, false)
+        preRun()
+        return viewOfLayout
+    }
+
+    private fun preRun() {
+        (activity as AppCompatActivity).supportActionBar?.title = "Map Selector"
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

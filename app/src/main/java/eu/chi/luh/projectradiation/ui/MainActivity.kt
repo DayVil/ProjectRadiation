@@ -44,21 +44,6 @@ class MainActivity : AppCompatActivity() {
         mapData.printPos("MainActivity")
     }
 
-//    override fun onRequestPermissionsResult(
-//        requestCode: Int,
-//        permissions: Array<out String>,
-//        grantResults: IntArray
-//    ) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//
-//        if (requestCode == RequestCodes.PERMISSION_REQUEST_ACCESS_LOCATION) {
-//            if (grantResults.isNotEmpty() && grantResults[0]==PackageManager.PERMISSION_GRANTED) {
-//
-//            }
-//        }
-//    }
-
-
     override fun onSupportNavigateUp(): Boolean {
         return NavigationUI.navigateUp(navController, null)
     }

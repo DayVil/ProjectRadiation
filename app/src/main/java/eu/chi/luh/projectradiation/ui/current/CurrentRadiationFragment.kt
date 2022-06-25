@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.SearchView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,13 +42,13 @@ class CurrentRadiationFragment : Fragment() {
 
         preRun()
         update()
-        debug()
 
         return viewOfLayout
     }
 
     private fun preRun() {
         // Inits
+        (activity as AppCompatActivity).supportActionBar?.title = "Current"
         db = ProjectRadiationDatabase.invoke(viewOfLayout.context)
         mapData = MapData.invoke()
         fusedLocationProviderClient =
@@ -120,15 +121,13 @@ class CurrentRadiationFragment : Fragment() {
                 adapter?.notifyDataSetChanged()
             }
         }
-    }
 
-    private fun debug() {
-        val btn = viewOfLayout.findViewById<Button>(R.id.del)
-
-        btn.setOnClickListener {
-            GlobalScope.launch {
-                db.environmentDao().deleteAll()
-                update()
+        lifecycleScope.launch {
+            var amountInStorage = db.environmentDao().getCount()
+            while (amountInStorage > 12) {
+                val oldestMember = db.environmentDao().getFirst()
+                db.environmentDao().delete(oldestMember)
+                amountInStorage = db.environmentDao().getCount()
             }
         }
     }
