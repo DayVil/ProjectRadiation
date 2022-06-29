@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import eu.chi.luh.projectradiation.R
 import eu.chi.luh.projectradiation.entities.ProjectRadiationDatabase
@@ -63,11 +63,8 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
 
                 val name = db.environmentDao().getAll()
                 //TODO open Fragment with more data
-                Toast.makeText(
-                    itemView.context,
-                    "You clicked on ${name[position].cityName}",
-                    Toast.LENGTH_LONG
-                ).show()
+                Navigation.findNavController(itemView)
+                    .navigate(R.id.action_currentWeatherFragment_to_maximizeFragement)
             }
         }
 
