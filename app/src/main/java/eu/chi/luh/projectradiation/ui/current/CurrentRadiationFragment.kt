@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -35,7 +37,7 @@ class CurrentRadiationFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         viewOfLayout = inflater.inflate(R.layout.current_radiation_fragment, container, false)
 
         preRun()
@@ -56,6 +58,14 @@ class CurrentRadiationFragment : Fragment() {
             getString(R.string.OPEN_WEATHER_API),
             getString(R.string.TOMORROW_API)
         )
+
+        // Button debug
+        val btn = viewOfLayout.findViewById<Button>(R.id.buttonDebug)
+        // TODO Cant maximise
+        btn.setOnClickListener {
+            Navigation.findNavController(viewOfLayout)
+                .navigate(R.id.action_currentWeatherFragment_to_maximizeFragement)
+        }
 
         // Recycler view init
         val recView = viewOfLayout.findViewById<RecyclerView>(R.id.recyclerView)

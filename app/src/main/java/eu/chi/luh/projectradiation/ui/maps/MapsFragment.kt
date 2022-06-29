@@ -38,7 +38,7 @@ class MapsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewOfLayout = inflater.inflate(R.layout.fragment_maps, container, false)
+        viewOfLayout = inflater.inflate(R.layout.maps_fragment, container, false)
         preRun()
         return viewOfLayout
     }
