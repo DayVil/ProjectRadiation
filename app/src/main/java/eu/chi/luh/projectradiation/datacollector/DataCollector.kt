@@ -29,12 +29,10 @@ class DataCollector(
 
 
     private fun searchName(ls: List<Environment>, name: String): Int {
-        var cnt = 0
-        for (i in ls) {
+        for ((cnt, i) in ls.withIndex()) {
             if (name == i.cityName) {
                 return cnt
             }
-            ++cnt
         }
 
         return -1

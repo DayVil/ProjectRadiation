@@ -10,7 +10,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <ImageView
@@ -23,165 +23,88 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:layout_marginHorizontal="8dp"
             app:cardElevation="5dp">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="8dp">
+                android:layout_height="wrap_content"
+                android:padding="5dp">
 
                 <TextView
                     style="@style/TextAppearance.AppCompat.Headline"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/ultraviolet_index_view"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Ultraviolet Radiation">
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:text="Ultraviolet Index" >
 
                 </TextView>
 
-                <TableLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/current_uvi_view"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:stretchColumns="2">
+                    app:layout_constraintTop_toBottomOf="@+id/ultraviolet_index_view"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginTop="10dp"
+                    android:text="Current" >
 
-                    <TableRow>
+                </TextView>
 
-                    </TableRow>
+                <TextView
+                    android:id="@+id/current_uvi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@+id/ultraviolet_index_view"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginTop="10dp"
+                    android:text="Current" >
 
-                    <TableRow>
+                </TextView>
 
-                        <TextView
-                            android:paddingStart="10dp"
-                            android:paddingTop="5dp"
-                            android:paddingEnd="10dp"
-                            android:text="UVi" />
+                <TextView
+                    android:id="@+id/average_uvi_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@+id/current_uvi"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:text="Average" >
 
-                        <TextView
-                            android:paddingTop="5dp"
-                            android:text="Current" />
+                </TextView>
 
-                        <TextView
-                            android:id="@+id/current_uvi_data"
-                            android:gravity="end"
-                            android:paddingTop="5dp"
-                            android:text="current_uvi_data" />
-                    </TableRow>
+                <TextView
+                    android:id="@+id/maximum_uvi_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@+id/average_uvi_view"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:text="Maximum" >
 
-                    <TableRow>
+                </TextView>
 
-                        <TextView
-                            android:paddingStart="10dp"
-                            android:paddingTop="5dp"
-                            android:paddingEnd="10dp"
-                            android:text="UVi" />
+                <TextView
+                    android:id="@+id/minimum_uvi_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@+id/maximum_uvi_view"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:text="Minimum" >
 
-                        <TextView
-                            android:paddingTop="5dp"
-                            android:text="Average" />
+                </TextView>
 
-                        <TextView
-                            android:id="@+id/average_uvi_data"
-                            android:gravity="end"
-                            android:paddingTop="5dp"
-                            android:text="average_uvi_data" />
-                    </TableRow>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <TableRow>
-
-                        <TextView
-                            android:paddingStart="10dp"
-                            android:paddingTop="5dp"
-                            android:paddingEnd="10dp"
-                            android:text="UVi" />
-
-                        <TextView
-                            android:paddingTop="5dp"
-                            android:text="Minimum" />
-
-                        <TextView
-                            android:id="@+id/minimum_uvi_data"
-                            android:gravity="end"
-                            android:paddingTop="5dp"
-                            android:text="minimum_uvi_data" />
-                    </TableRow>
-
-                    <TableRow>
-
-                        <TextView
-                            android:paddingStart="10dp"
-                            android:paddingTop="5dp"
-                            android:paddingEnd="10dp"
-                            android:text="UVi" />
-
-                        <TextView
-                            android:paddingTop="5dp"
-                            android:text="Maximum" />
-
-                        <TextView
-                            android:id="@+id/maximum_uvi_data"
-                            android:gravity="end"
-                            android:paddingTop="5dp"
-                            android:text="maximum_uvi_data" />
-                    </TableRow>
-
-                </TableLayout>
-
-            </LinearLayout>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginHorizontal="8dp"
             app:cardElevation="5dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="8dp">
-
-                <TextView
-                    style="@style/TextAppearance.AppCompat.Headline"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Pollen">
-
-                </TextView>
-
-                <TableLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:stretchColumns="1">
-
-                    <TableRow>
-
-                        <TextView
-                            android:paddingTop="5dp"
-                            android:text="Fruit" />
-
-                        <TextView
-                            android:gravity="end"
-                            android:paddingTop="5dp"
-                            android:text="Apple" />
-                    </TableRow>
-
-                    <TableRow>
-
-                        <TextView
-                            android:paddingTop="5dp"
-                            android:text="Nut" />
-
-                        <TextView
-                            android:gravity="right"
-                            android:paddingTop="5dp"
-                            android:text="CocoNut" />
-                    </TableRow>
-
-                </TableLayout>
-
-            </LinearLayout>
         </androidx.cardview.widget.CardView>
 
     </LinearLayout>
