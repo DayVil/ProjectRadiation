@@ -3,6 +3,7 @@
     <string name="title_activity_maps">MapsActivity</string>
     <string name="oMapsButtonstr">Maps_Button</string>
     <string name="hardcodedLocationButtonstr">Button</string>
+    <string name="placeholder_text_double">phDouble</string>
 
     <!-- current menu -->
     <string name="current_title">Current</string>
@@ -12,7 +13,22 @@
 
     <!-- settings menu -->
     <string name="settings_title">Settings</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- maximise fragment -->
+    <!-- title -->
+    <string name="uvi_title_maximise">Ultraviolet Index</string>
+    <string name="pollen_title_maximise">Pollen</string>
+    <!-- value names -->
+    <string name="current_value_maximise">Current</string>
+    <string name="average_value_maximise">Average</string>
+    <string name="maximum_value_maximise">Maximum</string>
+    <string name="minimum_value_maximise">Minimum</string>
+    <!-- tags -->
+    <string name="pollen_general_tag_maximise">General</string>
+    <string name="pollen_grass_tag_maximise">Grass</string>
+    <string name="pollen_tree_tag_maximise">Tree</string>
+    <string name="pollen_weed_tag_maximise">Weed</string>
+    <string name="place_holder_place">City_Name, Country</string>
 
 </resources>

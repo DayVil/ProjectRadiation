@@ -16,6 +16,11 @@ import eu.chi.luh.projectradiation.map.MapData
 class MapsFragment : Fragment() {
     private lateinit var viewOfLayout: View
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        (activity as AppCompatActivity).supportActionBar?.title = "Map"
+    }
+
     private val callback = OnMapReadyCallback { googleMap ->
         /**
          * Manipulates the map once available.
@@ -28,6 +33,7 @@ class MapsFragment : Fragment() {
          */
         val mapData = MapData.invoke()
         val currentLocation = mapData.getPos()
+
         mapData.printPos("Maps")
         googleMap.addMarker(MarkerOptions().position(currentLocation).title("Marker in Current"))
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation))
@@ -39,12 +45,7 @@ class MapsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         viewOfLayout = inflater.inflate(R.layout.maps_fragment, container, false)
-        preRun()
         return viewOfLayout
-    }
-
-    private fun preRun() {
-        (activity as AppCompatActivity).supportActionBar?.title = "Map Selector"
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

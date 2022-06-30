@@ -32,6 +32,16 @@ class CurrentRadiationFragment : Fragment() {
     private var layoutManager: RecyclerView.LayoutManager? = null
     private var adapter: RecyclerView.Adapter<RecyclerAdapter.ViewHolder>? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        (activity as AppCompatActivity).supportActionBar?.title = "Current"
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as AppCompatActivity).supportActionBar?.title = "Current"
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -46,7 +56,6 @@ class CurrentRadiationFragment : Fragment() {
 
     private fun preRun() {
         // Inits
-        (activity as AppCompatActivity).supportActionBar?.title = "Current"
         db = ProjectRadiationDatabase.invoke(viewOfLayout.context)
         mapData = MapData.invoke()
         fusedLocationProviderClient =

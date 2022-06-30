@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/currentWeatherFragment"
         android:name="eu.chi.luh.projectradiation.ui.current.CurrentRadiationFragment"
-        android:label="current_radiation_fragment"
+        android:label=""
         tools:layout="@layout/current_radiation_fragment">
         <action
             android:id="@+id/action_currentWeatherFragment_to_maximizeFragement"
@@ -18,18 +18,18 @@
     <fragment
         android:id="@+id/mapFragment"
         android:name="eu.chi.luh.projectradiation.ui.maps.MapsFragment"
-        android:label="fragment_maps"
+        android:label=""
         tools:layout="@layout/maps_fragment" />
 
     <fragment
         android:id="@+id/settingsFragment"
         android:name="SettingsFragment"
-        android:label="settings_fragment"
+        android:label=""
         tools:layout="@layout/settings_fragment" />
     <fragment
         android:id="@+id/maximizeFragement"
         android:name="eu.chi.luh.projectradiation.ui.current.MaximizeFragment"
-        android:label="maximize_fragement"
+        android:label=""
         tools:layout="@layout/maximize_fragement">
         <action
             android:id="@+id/action_maximizeFragement_to_currentWeatherFragment2"
