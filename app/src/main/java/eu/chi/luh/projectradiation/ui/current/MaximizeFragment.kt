@@ -10,7 +10,6 @@ import eu.chi.luh.projectradiation.R
 
 
 class MaximizeFragment : Fragment() {
-
     private lateinit var viewOfLayout: View
 
 

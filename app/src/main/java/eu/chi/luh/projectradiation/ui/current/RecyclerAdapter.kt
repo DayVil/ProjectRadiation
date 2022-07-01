@@ -1,6 +1,5 @@
 package eu.chi.luh.projectradiation.ui.current
 
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +7,6 @@ import android.widget.TextView
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import eu.chi.luh.projectradiation.R
-import eu.chi.luh.projectradiation.entities.Environment
 import eu.chi.luh.projectradiation.entities.ProjectRadiationDatabase
 import java.time.Instant
 import java.time.LocalDateTime
@@ -21,7 +19,6 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerAdapter.ViewHolder {
         val v = LayoutInflater.from(parent.context)
             .inflate(R.layout.recycler_view_summary_data, parent, false)
-
         db = ProjectRadiationDatabase.invoke(parent.context)
         return ViewHolder(v)
     }
@@ -61,14 +58,10 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
         init {
             itemView.setOnClickListener {
                 val position: Int = adapterPosition
-                val ls = db.environmentDao().getAll()
-                val item: Environment = ls[position]
 
-                val bundle = Bundle()
-
-                //TODO open Fragment with more data
                 Navigation.findNavController(itemView)
                     .navigate(R.id.action_currentWeatherFragment_to_maximizeFragement)
+
             }
         }
 
