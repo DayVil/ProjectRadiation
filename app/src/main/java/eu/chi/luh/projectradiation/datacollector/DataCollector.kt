@@ -68,31 +68,24 @@ class DataCollector(
     fun collect(pause: Long = 60) {
         _currentTime = System.currentTimeMillis()
         val pauseTime = TimeUnit.MINUTES.toMillis(pause)
+        val databaseEntries = _database.environmentDao().getAll()
 
-        if (this._database.environmentDao().checkEmpty() == null) {
+        if (databaseEntries.isEmpty()) {
             getData()
             insertData()
         } else {
+            val newestEntry: Environment = databaseEntries[0]
             val lessThanTime =
-                (_currentTime - this._database.environmentDao().getLast().time) < pauseTime
-            val ctyName = this._database.environmentDao().getLast().cityName
+                (_currentTime - newestEntry.time) < pauseTime
+            val newestCtyName = newestEntry.cityName
             val toSearchCity = _mapData.getCityName()
 
-            if (lessThanTime) {
-                if (ctyName == toSearchCity) {
-                    return
-                } else {
-                    _database.environmentDao().getAll().let {
-                        getData()
-                        val idx = searchName(it, toSearchCity)
-                        if (idx != -1) {
-                            // TODO update Database
-                        } else {
-                            insertData()
-                        }
-                    }
+            if (newestCtyName != toSearchCity) {
 
-                }
+            } else if (!lessThanTime) {
+                _database.environmentDao().delete(newestEntry)
+                getData()
+                insertData()
             }
         }
     }

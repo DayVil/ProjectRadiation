@@ -35,8 +35,9 @@
             android:id="@+id/action_maximizeFragement_to_currentWeatherFragment2"
             app:destination="@id/currentWeatherFragment" />
         <argument
-            android:name="indxDB"
-            app:argType="integer" />
+            android:name="pssitionDb"
+            app:argType="integer"
+            android:defaultValue="0" />
     </fragment>
 
 </navigation>

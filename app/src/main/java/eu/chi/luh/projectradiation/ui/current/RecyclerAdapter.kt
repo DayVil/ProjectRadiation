@@ -1,10 +1,13 @@
 package eu.chi.luh.projectradiation.ui.current
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import eu.chi.luh.projectradiation.R
 import eu.chi.luh.projectradiation.entities.ProjectRadiationDatabase
@@ -59,9 +62,12 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
             itemView.setOnClickListener {
                 val position: Int = adapterPosition
 
-                Navigation.findNavController(itemView)
-                    .navigate(R.id.action_currentWeatherFragment_to_maximizeFragement)
+                val bundle = bundleOf("position" to position)
 
+//                Navigation.findNavController(itemView)
+//                    .navigate(R.id.action_currentWeatherFragment_to_maximizeFragement)
+
+                itemView.findNavController().navigate(R.id.action_currentWeatherFragment_to_maximizeFragement, bundle)
             }
         }
 
