@@ -1,11 +1,11 @@
 package eu.chi.luh.projectradiation.datacollector
 
+import android.content.Context
 import eu.chi.luh.projectradiation.datacollector.typecollectors.AirPollutionCollector
 import eu.chi.luh.projectradiation.datacollector.typecollectors.PollenCollector
 import eu.chi.luh.projectradiation.datacollector.typecollectors.UviCollector
 import eu.chi.luh.projectradiation.entities.*
 import eu.chi.luh.projectradiation.map.MapData
-import java.util.concurrent.TimeUnit
 
 /**
  * Collects data and stores it inside the database.
@@ -28,14 +28,14 @@ class DataCollector(
     private var _airData: AirPollution? = null
 
 
-    private fun searchName(ls: List<Environment>, name: String): Int {
+    private fun searchName(ls: List<Environment>, name: String): Environment? {
         for ((cnt, i) in ls.withIndex()) {
             if (name == i.cityName) {
-                return cnt
+                return ls[cnt]
             }
         }
 
-        return -1
+        return null
     }
 
     private fun getData() {
@@ -62,31 +62,40 @@ class DataCollector(
      * Collects the data of all given types and inserts the result in the database. This can
      * only occur every hour.
      *
-     * @param pause (Minutes) Decides whether the collector should collect new data between the last
      * fetch and the given time.
      */
-    fun collect(pause: Long = 60) {
+    fun collect() {
         _currentTime = System.currentTimeMillis()
-        val pauseTime = TimeUnit.MINUTES.toMillis(pause)
         val databaseEntries = _database.environmentDao().getAll()
 
         if (databaseEntries.isEmpty()) {
             getData()
             insertData()
         } else {
-            val newestEntry: Environment = databaseEntries[0]
-            val lessThanTime =
-                (_currentTime - newestEntry.time) < pauseTime
-            val newestCtyName = newestEntry.cityName
             val toSearchCity = _mapData.getCityName()
 
-            if (newestCtyName != toSearchCity) {
-
-            } else if (!lessThanTime) {
-                _database.environmentDao().delete(newestEntry)
+            val env = searchName(databaseEntries, toSearchCity)
+            if (env != null) {
+                _database.environmentDao().delete(env)
+                getData()
+                insertData()
+            } else {
                 getData()
                 insertData()
             }
+
         }
+    }
+
+    fun collectAll(ctx: Context) {
+        val databaseEntries = _database.environmentDao().getAll().reversed()
+        val currentPos = _mapData.getPos()
+
+        for (i in databaseEntries) {
+            _mapData.setPosition(ctx, i.lat, i.lon)
+            this.collect()
+        }
+
+        _mapData.setPosition(ctx, currentPos)
     }
 }

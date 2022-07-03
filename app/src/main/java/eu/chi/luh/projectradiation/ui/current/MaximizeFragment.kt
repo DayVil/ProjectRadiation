@@ -8,8 +8,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import eu.chi.luh.projectradiation.R
-import eu.chi.luh.projectradiation.entities.ProjectRadiationDatabase
 import eu.chi.luh.projectradiation.entities.Environment
+import eu.chi.luh.projectradiation.entities.ProjectRadiationDatabase
 
 
 class MaximizeFragment : Fragment() {
@@ -21,8 +21,6 @@ class MaximizeFragment : Fragment() {
     }
 
     fun populatePage(env: Environment?) {
-        val title: String? = "${env?.cityName}, ${env?.countryName}"
-
         val uviCurrent: Double? = env?.uvi?.uviCurrent
         val uviAverage: Double? = env?.uvi?.uviAverage
         val uviMax: Double? = env?.uvi?.uviMaximum
@@ -51,7 +49,8 @@ class MaximizeFragment : Fragment() {
         if (env == null) {
             changeTitle("UNKNOWN")
         } else {
-            changeTitle(title!!)
+            val title = "${env.cityName}, ${env.countryName}"
+            changeTitle(title)
         }
 
         viewOfLayout.findViewById<TextView>(R.id.current_uvi_value_maximise).text = String.format("%.2f", uviCurrent)
@@ -88,7 +87,7 @@ class MaximizeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         viewOfLayout = inflater.inflate(R.layout.maximize_fragement, container, false)
         db = ProjectRadiationDatabase.invoke(viewOfLayout.context)

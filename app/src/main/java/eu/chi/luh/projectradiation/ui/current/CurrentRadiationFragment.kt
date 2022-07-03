@@ -20,6 +20,8 @@ import eu.chi.luh.projectradiation.map.MapData
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+const val AMOUNT_OF_CARDS = 6
+
 class CurrentRadiationFragment : Fragment() {
 
     private lateinit var viewOfLayout: View
@@ -106,7 +108,7 @@ class CurrentRadiationFragment : Fragment() {
         val refresh = viewOfLayout.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh)
         refresh.setColorSchemeColors(viewOfLayout.resources.getColor(R.color.orange_l))
         refresh.setOnRefreshListener {
-            dataCollector.collect()
+            dataCollector.collectAll(viewOfLayout.context)
             update()
             refresh.isRefreshing = false
         }
@@ -131,7 +133,7 @@ class CurrentRadiationFragment : Fragment() {
 
         lifecycleScope.launch {
             var amountInStorage = db.environmentDao().getCount()
-            while (amountInStorage > 12) {
+            while (amountInStorage > AMOUNT_OF_CARDS) {
                 val oldestMember = db.environmentDao().getFirst()
                 db.environmentDao().delete(oldestMember)
                 amountInStorage = db.environmentDao().getCount()
