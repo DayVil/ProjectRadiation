@@ -19,6 +19,7 @@
     <!-- title -->
     <string name="uvi_title_maximise">Ultraviolet Index</string>
     <string name="pollen_title_maximise">Pollen</string>
+    <string name="air_title_maximise">Air Quality Index</string>
     <!-- value names -->
     <string name="current_value_maximise">Current</string>
     <string name="average_value_maximise">Average</string>
@@ -30,5 +31,11 @@
     <string name="pollen_tree_tag_maximise">Tree</string>
     <string name="pollen_weed_tag_maximise">Weed</string>
     <string name="place_holder_place">City_Name, Country</string>
+    <string name="city_name_debug">City_Name</string>
+    <string name="current_uv_index_desc">Current UV-Index</string>
+    <string name="current_pollen_index_desc">Current Pollen-Index</string>
+    <string name="current_air_index_desc">Current Air-Index</string>
+    <string name="last_update_desc">Last Update</string>
+
 
 </resources>

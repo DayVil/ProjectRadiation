@@ -18,7 +18,7 @@ class DataCollector(
     private val _uviCollector: UviCollector = UviCollector(this._apiOpenWeather)
     private val _pollenCollector: PollenCollector = PollenCollector(this._tomorrowAPI)
     private val _airQualityCollector: AirPollutionCollector =
-        AirPollutionCollector(this._tomorrowAPI)
+        AirPollutionCollector(this._apiOpenWeather)
 
     private val _mapData = MapData.invoke()
 
@@ -52,7 +52,8 @@ class DataCollector(
             _mapData.getCityName(),
             _mapData.getCountry(),
             _uviData,
-            _pollenData
+            _pollenData,
+            _airData
         )
 
         _database.environmentDao().insertAll(env)

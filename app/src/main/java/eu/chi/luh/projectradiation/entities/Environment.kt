@@ -13,6 +13,6 @@ data class Environment(
     @ColumnInfo(name = "city_name") val cityName: String,
     @ColumnInfo(name = "country_name") val countryName: String,
     @Embedded var uvi: Uvi?,
-    @Embedded var pollen: Pollen?
-//    @Embedded val airPollution: AirPollution?
+    @Embedded var pollen: Pollen?,
+    @Embedded var airPollution: AirPollution?
 )

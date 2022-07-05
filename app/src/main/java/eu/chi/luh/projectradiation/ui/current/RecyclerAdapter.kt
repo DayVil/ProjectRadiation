@@ -1,12 +1,10 @@
 package eu.chi.luh.projectradiation.ui.current
 
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.os.bundleOf
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import eu.chi.luh.projectradiation.R
@@ -35,6 +33,7 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
 
             holder.uviValue.text = String.format("%.2f", data.uvi?.uviCurrent)
             holder.pollenValue.text = String.format("%.2f", data.pollen?.pollenCurrent)
+            holder.airValue.text = String.format("%.2f", data.airPollution?.aqi)
 
             val formatter = DateTimeFormatter.ofPattern("HH:mm   dd.MM.yyyy")
             val instant = Instant.ofEpochMilli(data.time)
@@ -56,6 +55,7 @@ class RecyclerAdapter : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
         var locationName: TextView = itemView.findViewById(R.id.location)
         var uviValue: TextView = itemView.findViewById(R.id.uvi_value)
         var pollenValue: TextView = itemView.findViewById(R.id.pollen_value)
+        var airValue: TextView = itemView.findViewById(R.id.air_value)
         var timeValue: TextView = itemView.findViewById(R.id.update_value)
 
         init {

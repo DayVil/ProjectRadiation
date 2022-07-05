@@ -26,6 +26,11 @@ class MaximizeFragment : Fragment() {
         val uviMax: Double? = env?.uvi?.uviMaximum
         val uviMin: Double? = env?.uvi?.uviMinimum
 
+        val airCurrent: Double? = env?.airPollution?.aqi
+        val airAverage: Double? = env?.airPollution?.aqiAverage
+        val airMax: Double? = env?.airPollution?.aqiMaximum
+        val airMin: Double? = env?.airPollution?.aqiMinimum
+
         val genCurrent: Double? = env?.pollen?.pollenCurrent
         val genAverage: Double? = env?.pollen?.pollenAverage
         val genMax: Double? = env?.pollen?.pollenMaximum
@@ -53,30 +58,59 @@ class MaximizeFragment : Fragment() {
             changeTitle(title)
         }
 
-        viewOfLayout.findViewById<TextView>(R.id.current_uvi_value_maximise).text = String.format("%.2f", uviCurrent)
-        viewOfLayout.findViewById<TextView>(R.id.average_uvi_value_maximise).text = String.format("%.2f", uviAverage)
-        viewOfLayout.findViewById<TextView>(R.id.maximum_uvi_value_maximise).text = String.format("%.2f", uviMax)
-        viewOfLayout.findViewById<TextView>(R.id.minimum_uvi_value_maximise).text = String.format("%.2f", uviMin)
+        viewOfLayout.findViewById<TextView>(R.id.current_uvi_value_maximise).text =
+            String.format("%.2f", uviCurrent)
+        viewOfLayout.findViewById<TextView>(R.id.average_uvi_value_maximise).text =
+            String.format("%.2f", uviAverage)
+        viewOfLayout.findViewById<TextView>(R.id.maximum_uvi_value_maximise).text =
+            String.format("%.2f", uviMax)
+        viewOfLayout.findViewById<TextView>(R.id.minimum_uvi_value_maximise).text =
+            String.format("%.2f", uviMin)
 
-        viewOfLayout.findViewById<TextView>(R.id.current_gen_value_maximise).text = String.format("%.2f", genCurrent)
-        viewOfLayout.findViewById<TextView>(R.id.average_gen_value_maximise).text = String.format("%.2f", genAverage)
-        viewOfLayout.findViewById<TextView>(R.id.maximum_gen_value_maximise).text = String.format("%.2f", genMax)
-        viewOfLayout.findViewById<TextView>(R.id.minimum_gen_value_maximise).text = String.format("%.2f", genMin)
+        viewOfLayout.findViewById<TextView>(R.id.current_air_value_maximise).text =
+            String.format("%.2f", airCurrent)
+        viewOfLayout.findViewById<TextView>(R.id.average_air_value_maximise).text =
+            String.format("%.2f", airAverage)
+        viewOfLayout.findViewById<TextView>(R.id.maximum_air_value_maximise).text =
+            String.format("%.2f", airMax)
+        viewOfLayout.findViewById<TextView>(R.id.minimum_air_value_maximise).text =
+            String.format("%.2f", airMin)
 
-        viewOfLayout.findViewById<TextView>(R.id.current_grass_value_maximise).text = grassCurrent.toString()
-        viewOfLayout.findViewById<TextView>(R.id.average_grass_value_maximise).text = String.format("%.2f", grassAverage)
-        viewOfLayout.findViewById<TextView>(R.id.maximum_grass_value_maximise).text = grassMax.toString()
-        viewOfLayout.findViewById<TextView>(R.id.minimum_grass_value_maximise).text = grassMin.toString()
+        viewOfLayout.findViewById<TextView>(R.id.current_gen_value_maximise).text =
+            String.format("%.2f", genCurrent)
+        viewOfLayout.findViewById<TextView>(R.id.average_gen_value_maximise).text =
+            String.format("%.2f", genAverage)
+        viewOfLayout.findViewById<TextView>(R.id.maximum_gen_value_maximise).text =
+            String.format("%.2f", genMax)
+        viewOfLayout.findViewById<TextView>(R.id.minimum_gen_value_maximise).text =
+            String.format("%.2f", genMin)
 
-        viewOfLayout.findViewById<TextView>(R.id.current_tree_value_maximise).text = treeCurrent.toString()
-        viewOfLayout.findViewById<TextView>(R.id.average_tree_value_maximise).text = String.format("%.2f", treeAverage)
-        viewOfLayout.findViewById<TextView>(R.id.maximum_tree_value_maximise).text = treeMax.toString()
-        viewOfLayout.findViewById<TextView>(R.id.minimum_tree_value_maximise).text = treeMin.toString()
+        viewOfLayout.findViewById<TextView>(R.id.current_grass_value_maximise).text =
+            grassCurrent.toString()
+        viewOfLayout.findViewById<TextView>(R.id.average_grass_value_maximise).text =
+            String.format("%.2f", grassAverage)
+        viewOfLayout.findViewById<TextView>(R.id.maximum_grass_value_maximise).text =
+            grassMax.toString()
+        viewOfLayout.findViewById<TextView>(R.id.minimum_grass_value_maximise).text =
+            grassMin.toString()
 
-        viewOfLayout.findViewById<TextView>(R.id.current_weed_value_maximise).text = weedCurrent.toString()
-        viewOfLayout.findViewById<TextView>(R.id.average_weed_value_maximise).text = String.format("%.2f", weedAverage)
-        viewOfLayout.findViewById<TextView>(R.id.maximum_weed_value_maximise).text = weedMax.toString()
-        viewOfLayout.findViewById<TextView>(R.id.minimum_weed_value_maximise).text = weedMin.toString()
+        viewOfLayout.findViewById<TextView>(R.id.current_tree_value_maximise).text =
+            treeCurrent.toString()
+        viewOfLayout.findViewById<TextView>(R.id.average_tree_value_maximise).text =
+            String.format("%.2f", treeAverage)
+        viewOfLayout.findViewById<TextView>(R.id.maximum_tree_value_maximise).text =
+            treeMax.toString()
+        viewOfLayout.findViewById<TextView>(R.id.minimum_tree_value_maximise).text =
+            treeMin.toString()
+
+        viewOfLayout.findViewById<TextView>(R.id.current_weed_value_maximise).text =
+            weedCurrent.toString()
+        viewOfLayout.findViewById<TextView>(R.id.average_weed_value_maximise).text =
+            String.format("%.2f", weedAverage)
+        viewOfLayout.findViewById<TextView>(R.id.maximum_weed_value_maximise).text =
+            weedMax.toString()
+        viewOfLayout.findViewById<TextView>(R.id.minimum_weed_value_maximise).text =
+            weedMin.toString()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

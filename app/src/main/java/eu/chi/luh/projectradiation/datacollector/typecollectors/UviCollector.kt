@@ -20,7 +20,7 @@ import java.util.concurrent.CountDownLatch
  */
 class UviCollector(_apiKey: String): EnvironmentCollector<Uvi>(_apiKey) {
     private val _exclude = "daily,minutely"
-    val mapData = MapData.invoke()
+    private val mapData = MapData.invoke()
 
     /**
      * Calculates the [current, minimum, maximum, average] uvi values over a day.
