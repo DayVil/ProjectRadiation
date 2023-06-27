@@ -1,5 +1,7 @@
 # ProjectRadiation
+This is an Android app, that can give you information about alergens on a specific defined. A working demo may be found in the demo subsection. Also this project may be hard to build due to the necesarry API keys.
 
-An app that measures the solar radiation and the amount of pollen you are exposed to.
 
-My work process: [drive](https://drive.google.com/drive/folders/1_Lk1UPp1nMLZOAIgFx59xXLB8oCOxPej?usp=sharing)
+## Demo
+Here you can see a quick demo of the project:
+![](./docs/docsfx/presentation.gif)
